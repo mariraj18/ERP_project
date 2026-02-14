@@ -1,0 +1,25 @@
+/* styles/globals.css */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Smooth scrolling and animations */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better rendering for animations */
+.transform {
+  transform: translateZ(0);
+}
+
+/* Hide scrollbar during transitions */
+.no-scroll {
+  overflow: hidden;
+}

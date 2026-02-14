@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme Variables */
+:root {
+  /* Light theme colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  
+  /* Role-based card colors - Light */
+  --card-super-admin: #ffffff;
+  --card-super-admin-border: #e9d5ff;
+  --card-super-admin-gradient: linear-gradient(135deg, #faf5ff 0%, #ffffff 100%);
+  --card-staff: #ffffff;
+  --card-staff-border: #d1fae5;
+  --card-staff-gradient: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  --card-student: #ffffff;
+  --card-student-border: #fef3c7;
+  --card-student-gradient: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.dark {
+  /* Dark theme colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #475569;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  
+  /* Role-based card colors - Dark (Glossy) */
+  --card-super-admin: rgba(88, 28, 135, 0.1);
+  --card-super-admin-border: rgba(147, 51, 234, 0.3);
+  --card-super-admin-gradient: linear-gradient(135deg, rgba(88, 28, 135, 0.15) 0%, rgba(30, 41, 59, 0.8) 100%);
+  --card-staff: rgba(5, 150, 105, 0.1);
+  --card-staff-border: rgba(16, 185, 129, 0.3);
+  --card-staff-gradient: linear-gradient(135deg, rgba(5, 150, 105, 0.15) 0%, rgba(30, 41, 59, 0.8) 100%);
+  --card-student: rgba(217, 119, 6, 0.1);
+  --card-student-border: rgba(245, 158, 11, 0.3);
+  --card-student-gradient: linear-gradient(135deg, rgba(217, 119, 6, 0.15) 0%, rgba(30, 41, 59, 0.8) 100%);
+}
+
+/* Theme-aware utility classes */
+.bg-theme-primary {
+  background-color: var(--bg-primary);
+}
+
+.bg-theme-secondary {
+  background-color: var(--bg-secondary);
+}
+
+.bg-theme-tertiary {
+  background-color: var(--bg-tertiary);
+}
+
+.text-theme-primary {
+  color: var(--text-primary);
+}
+
+.text-theme-secondary {
+  color: var(--text-secondary);
+}
+
+.text-theme-muted {
+  color: var(--text-muted);
+}
+
+.border-theme {
+  border-color: var(--border-color);
+}
+
+.shadow-theme {
+  box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 var(--shadow-color);
+}
+
+.shadow-theme-lg {
+  box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
+}
+
+.shadow-theme-xl {
+  box-shadow: 0 20px 25px -5px var(--shadow-color), 0 10px 10px -5px var(--shadow-color);
+}
+
+.shadow-theme-2xl {
+  box-shadow: 0 25px 50px -12px var(--shadow-color);
+}
+
+/* Role-based card styles */
+.card-super-admin {
+  background: var(--card-super-admin-gradient);
+  border-color: var(--card-super-admin-border);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card-staff {
+  background: var(--card-staff-gradient);
+  border-color: var(--card-staff-border);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.card-student {
+  background: var(--card-student-gradient);
+  border-color: var(--card-student-border);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+/* Glossy effect for dark mode */
+.dark .card-super-admin,
+.dark .card-staff,
+.dark .card-student {
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .card-super-admin:hover,
+.dark .card-staff:hover,
+.dark .card-student:hover {
+  box-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Tab styles for different roles */
+.tab-super-admin {
+  background: var(--card-super-admin);
+  border-color: var(--card-super-admin-border);
+}
+
+.tab-staff {
+  background: var(--card-staff);
+  border-color: var(--card-staff-border);
+}
+
+.tab-student {
+  background: var(--card-student);
+  border-color: var(--card-student-border);
+}
+
+/* Text color transitions */
+.text-adaptive {
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.text-adaptive-secondary {
+  color: var(--text-secondary);
+  transition: color 0.3s ease;
+}
+
+.text-adaptive-muted {
+  color: var(--text-muted);
+  transition: color 0.3s ease;
+}

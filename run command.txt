@@ -1,0 +1,6 @@
+npm install - in root
+cd server - npm install , node seeders/seed.js , npm run dev
+cd root - npm run dev
+set PORT=5001 && npm start
+npx kill-port 5000
+taskkill /im node.exe /f
