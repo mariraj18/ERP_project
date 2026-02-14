@@ -171,7 +171,7 @@ const startServer = async () => {
     }
 
     // Start server
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, "0.0.0.0", () => {
       console.log('─'.repeat(50));
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📊 API Health: http://localhost:${PORT}/api/health`);
