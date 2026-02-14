@@ -7,4 +7,10 @@ export default defineConfig({
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
+
+  // 👇 VERY IMPORTANT FOR RAILWAY
+  preview: {
+    host: true,
+    port: Number(process.env.PORT) || 4173,
+  }
 });
