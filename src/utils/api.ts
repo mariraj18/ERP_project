@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // ✅ Production + Development safe base URL
-const API_BASE_URL = "https://erpproject-production-eb03.up.railway.app/api";
+const API_BASE_URL = "https://erp-project-4zcn.onrender.com/api";
 
 
 export const api = axios.create({
