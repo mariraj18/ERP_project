@@ -433,57 +433,58 @@ export default function StudentDashboard() {
       className={`min-h-screen w-full ${darkBgClass}`}
     >
       {/* Header */}
+      {/* Header - Responsive */}
+<motion.div
+  initial={{ y: -50, opacity: 0 }}
+  animate={{ y: 0, opacity: 1 }}
+  transition={{ duration: 0.6 }}
+  className={`text-white p-4 sm:p-6 rounded-t-2xl shadow-2xl w-full transition-all duration-300 ${
+    isDark 
+      ? 'bg-gradient-to-r from-amber-800 to-slate-800' 
+      : 'bg-gradient-to-r from-amber-800 to-amber-920'
+  }`}
+>
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full max-w-[95rem] mx-auto">
+    <div className="flex items-center w-full sm:w-auto">
       <motion.div
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className={`text-white p-6 rounded-t-2xl shadow-2xl w-full transition-all duration-300 ${
-          isDark 
-            ? 'bg-gradient-to-r from-amber-800 to-slate-800' 
-            : 'bg-gradient-to-r from-amber-800 to-amber-920'
-        }`}
+        whileHover={{ scale: 1.1, rotate: 5 }}
+        transition={{ type: "spring", stiffness: 300 }}
+        className="bg-amber-700 p-2 sm:p-3 rounded-xl sm:rounded-2xl mr-3 sm:mr-4 shadow-lg cursor-pointer flex-shrink-0"
+        onClick={() => navigate(`/profile/student/${user?.id}`)}
       >
-        <div className="flex justify-between items-center w-full max-w-[95rem] mx-auto">
-          <div className="flex items-center">
-            <motion.div
-              whileHover={{ scale: 1.1, rotate: 5 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="bg-amber-700 p-3 rounded-2xl mr-4 shadow-lg cursor-pointer"
-              onClick={() => navigate(`/profile/student/${user?.id}`)}
-            >
-              <User className="h-8 w-8" />
-            </motion.div>
-
-            <div className="cursor-pointer" onClick={() => navigate(`/profile/student/${user?.id}`)}>
-              <motion.h1
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-3xl font-bold hover:text-amber-100 transition-colors"
-              >
-                Student Portal {user?.class?.name ? `- ${user.class.name}` : ''}
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-amber-100 text-lg"
-              >
-                {userDepartment?.name || 'Department: Not assigned'} • View your attendance and messages
-              </motion.p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center bg-amber-700 px-4 py-3 rounded-xl backdrop-blur-sm shadow-lg"
-            >
-              <Calendar className="h-6 w-6 mr-2" />
-              <span className="font-semibold">{new Date().toLocaleDateString()}</span>
-            </motion.div>
-          </div>
-        </div>
+        <User className="h-6 w-6 sm:h-8 sm:w-8" />
       </motion.div>
+
+      <div className="min-w-0 flex-1 cursor-pointer" onClick={() => navigate(`/profile/student/${user?.id}`)}>
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-xl sm:text-2xl lg:text-3xl font-bold hover:text-amber-100 transition-colors truncate"
+        >
+          Student Portal {user?.class?.name ? `- ${user.class.name}` : ''}
+        </motion.h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-xs sm:text-sm lg:text-base text-amber-100 truncate"
+        >
+          {userDepartment?.name || 'Department: Not assigned'} • View your attendance
+        </motion.p>
+      </div>
+    </div>
+    <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        className="flex items-center bg-amber-700 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl backdrop-blur-sm shadow-lg"
+      >
+        <Calendar className="h-4 w-4 sm:h-6 sm:w-6 mr-1 sm:mr-2" />
+        <span className="text-xs sm:text-sm lg:text-base font-semibold">{new Date().toLocaleDateString()}</span>
+      </motion.div>
+    </div>
+  </div>
+</motion.div>
 
       {/* Enhanced Analytics Cards */}
       <motion.div
@@ -493,159 +494,161 @@ export default function StudentDashboard() {
         className="p-6 w-full max-w-[95rem] mx-auto space-y-6"
       >
         {/* Primary Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full">
-          {[
-            { 
-              label: 'Total Classes', 
-              value: attendanceSummary.totalDays, 
-              color: 'blue',
-              gradient: 'from-blue-500 to-blue-600',
-              bgGradient: isDark ? 'from-blue-900/20 to-blue-800/20' : 'from-blue-50 to-blue-100',
-              icon: Calendar,
-              change: 'This semester',
-              trend: 'neutral'
-            },
-            { 
-              label: 'Present Days', 
-              value: attendanceSummary.presentDays, 
-              color: 'green',
-              gradient: 'from-green-500 to-green-600',
-              bgGradient: isDark ? 'from-green-900/20 to-green-800/20' : 'from-green-50 to-green-100',
-              icon: CheckCircle,
-              change: 'Good attendance',
-              trend: 'up'
-            },
-            { 
-              label: 'Absent Days', 
-              value: attendanceSummary.absentDays, 
-              color: 'red',
-              gradient: 'from-red-500 to-red-600',
-              bgGradient: isDark ? 'from-red-900/20 to-red-800/20' : 'from-red-50 to-red-100',
-              icon: Clock,
-              change: attendanceSummary.absentDays > 5 ? 'High' : 'Normal',
-              trend: attendanceSummary.absentDays > 5 ? 'down' : 'up'
-            },
-            { 
-              label: 'Attendance Rate', 
-              value: `${attendanceSummary.percentage}%`, 
-              color: attendanceSummary.percentage >= 80 ? 'green' : attendanceSummary.percentage >= 70 ? 'amber' : 'red',
-              gradient: attendanceSummary.percentage >= 80 ? 'from-green-500 to-green-600' : 
-                       attendanceSummary.percentage >= 70 ? 'from-amber-500 to-amber-600' : 'from-red-500 to-red-600',
-              bgGradient: attendanceSummary.percentage >= 80 ? 
-                         (isDark ? 'from-green-900/20 to-green-800/20' : 'from-green-50 to-green-100') : 
-                         attendanceSummary.percentage >= 70 ? 
-                         (isDark ? 'from-amber-900/20 to-amber-800/20' : 'from-amber-50 to-amber-100') : 
-                         (isDark ? 'from-red-900/20 to-red-800/20' : 'from-red-50 to-red-100'),
-              icon: TrendingUp,
-              change: attendanceSummary.percentage >= 80 ? 'Excellent' : 
-                     attendanceSummary.percentage >= 70 ? 'Good' : 'Needs Improvement',
-              trend: attendanceSummary.percentage >= 75 ? 'up' : 'down',
-              special: true 
-            }
-          ].map((stat, index) => (
-            <motion.div
-              key={stat.label}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.03, 
-                y: -8,
-                transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
-              className={`rounded-2xl shadow-xl p-6 border backdrop-blur-sm relative overflow-hidden w-full bg-gradient-to-br ${stat.bgGradient} ${
-                isDark ? 'border-slate-700' : 'border-white'
-              }`}
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-              <div className="relative">
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
-                    <stat.icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div className={`flex items-center text-xs font-medium px-2 py-1 rounded-full ${
-                    stat.trend === 'up' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 
-                    stat.trend === 'down' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
-                  }`}>
-                    <TrendingUp className={`h-3 w-3 mr-1 ${stat.trend === 'down' ? 'rotate-180' : stat.trend === 'neutral' ? 'rotate-90' : ''}`} />
-                    {stat.trend === 'up' ? '↗' : stat.trend === 'down' ? '↘' : '→'}
-                  </div>
-                </div>
-                <div>
-                  <p className={`text-sm font-medium mb-1 transition-colors duration-300 ${
-                    isDark ? 'text-slate-300' : 'text-gray-700'
-                  }`}>{stat.label}</p>
-                  <p className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
-                    stat.special ? getAttendanceColor(attendanceSummary.percentage) : 
-                    isDark ? 'text-white' : 'text-gray-900'
-                  }`}>
-                    {stat.value}
-                  </p>
-                  <p className={`text-xs font-medium transition-colors duration-300 ${
-                    isDark ? 'text-slate-400' : 'text-gray-600'
-                  }`}>{stat.change}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+        {/* Primary Stats Row - Responsive */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 w-full">
+  {[
+    { 
+      label: 'Total Classes', 
+      value: attendanceSummary.totalDays, 
+      color: 'blue',
+      gradient: 'from-blue-500 to-blue-600',
+      bgGradient: isDark ? 'from-blue-900/20 to-blue-800/20' : 'from-blue-50 to-blue-100',
+      icon: Calendar,
+      change: 'This semester',
+      trend: 'neutral'
+    },
+    { 
+      label: 'Present Days', 
+      value: attendanceSummary.presentDays, 
+      color: 'green',
+      gradient: 'from-green-500 to-green-600',
+      bgGradient: isDark ? 'from-green-900/20 to-green-800/20' : 'from-green-50 to-green-100',
+      icon: CheckCircle,
+      change: 'Good attendance',
+      trend: 'up'
+    },
+    { 
+      label: 'Absent Days', 
+      value: attendanceSummary.absentDays, 
+      color: 'red',
+      gradient: 'from-red-500 to-red-600',
+      bgGradient: isDark ? 'from-red-900/20 to-red-800/20' : 'from-red-50 to-red-100',
+      icon: Clock,
+      change: attendanceSummary.absentDays > 5 ? 'High' : 'Normal',
+      trend: attendanceSummary.absentDays > 5 ? 'down' : 'up'
+    },
+    { 
+      label: 'Attendance Rate', 
+      value: `${attendanceSummary.percentage}%`, 
+      color: attendanceSummary.percentage >= 80 ? 'green' : attendanceSummary.percentage >= 70 ? 'amber' : 'red',
+      gradient: attendanceSummary.percentage >= 80 ? 'from-green-500 to-green-600' : 
+               attendanceSummary.percentage >= 70 ? 'from-amber-500 to-amber-600' : 'from-red-500 to-red-600',
+      bgGradient: attendanceSummary.percentage >= 80 ? 
+                 (isDark ? 'from-green-900/20 to-green-800/20' : 'from-green-50 to-green-100') : 
+                 attendanceSummary.percentage >= 70 ? 
+                 (isDark ? 'from-amber-900/20 to-amber-800/20' : 'from-amber-50 to-amber-100') : 
+                 (isDark ? 'from-red-900/20 to-red-800/20' : 'from-red-50 to-red-100'),
+      icon: TrendingUp,
+      change: attendanceSummary.percentage >= 80 ? 'Excellent' : 
+             attendanceSummary.percentage >= 70 ? 'Good' : 'Needs Improvement',
+      trend: attendanceSummary.percentage >= 75 ? 'up' : 'down',
+      special: true 
+    }
+  ].map((stat, index) => (
+    <motion.div
+      key={stat.label}
+      variants={itemVariants}
+      whileHover={{ 
+        scale: 1.03, 
+        y: -8,
+        transition: { type: "spring", stiffness: 400, damping: 10 }
+      }}
+      className={`rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 border backdrop-blur-sm relative overflow-hidden w-full bg-gradient-to-br ${stat.bgGradient} ${
+        isDark ? 'border-slate-700' : 'border-white'
+      }`}
+    >
+      <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+      <div className="relative">
+        <div className="flex justify-between items-start mb-2 sm:mb-4">
+          <div className={`p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
+            <stat.icon className="h-4 w-4 sm:h-6 sm:w-6 text-white" />
+          </div>
+          <div className={`flex items-center text-xs font-medium px-1.5 sm:px-2 py-1 rounded-full ${
+            stat.trend === 'up' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : 
+            stat.trend === 'down' ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' : 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'
+          }`}>
+            <TrendingUp className={`h-3 w-3 mr-1 ${stat.trend === 'down' ? 'rotate-180' : stat.trend === 'neutral' ? 'rotate-90' : ''}`} />
+            <span className="hidden xs:inline">{stat.trend === 'up' ? '↗' : stat.trend === 'down' ? '↘' : '→'}</span>
+          </div>
         </div>
+        <div>
+          <p className={`text-xs sm:text-sm font-medium mb-1 transition-colors duration-300 ${
+            isDark ? 'text-slate-300' : 'text-gray-700'
+          }`}>{stat.label}</p>
+          <p className={`text-xl sm:text-2xl lg:text-3xl font-bold mb-1 sm:mb-2 transition-colors duration-300 ${
+            stat.special ? getAttendanceColor(attendanceSummary.percentage) : 
+            isDark ? 'text-white' : 'text-gray-900'
+          }`}>
+            {stat.value}
+          </p>
+          <p className={`text-xs font-medium transition-colors duration-300 ${
+            isDark ? 'text-slate-400' : 'text-gray-600'
+          }`}>{stat.change}</p>
+        </div>
+      </div>
+    </motion.div>
+  ))}
+</div>
 
         {/* Analytics Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-          {[
-            {
-              title: 'Overall Attendance',
-              value: `${attendanceSummary.percentage}%`,
-              description: 'Based on your records',
-              icon: BarChart3,
-              color: 'emerald',
-              gradient: 'from-emerald-500 to-emerald-600',
-              bgGradient: isDark ? 'from-emerald-900/20 to-emerald-800/20' : 'from-emerald-50 to-emerald-100'
-            },
-            {
-              title: 'Messages Received',
-              value: messages.length,
-              description: `${messages.filter(m => !m.isRead).length} unread messages`,
-              icon: Mail,
-              color: 'blue',
-              gradient: 'from-blue-500 to-blue-600',
-              bgGradient: isDark ? 'from-blue-900/20 to-blue-800/20' : 'from-blue-50 to-blue-100'
-            },
-            {
-              title: 'Class Ranking',
-              value: '#3',
-              description: 'Out of 45 students',
-              icon: Award,
-              color: 'yellow',
-              gradient: 'from-yellow-500 to-yellow-600',
-              bgGradient: isDark ? 'from-yellow-900/20 to-yellow-800/20' : 'from-yellow-50 to-yellow-100'
-            }
-          ].map((card, index) => (
-            <motion.div
-              key={card.title}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.02,
-                y: -4,
-                transition: { type: "spring", stiffness: 400 }
-              }}
-              className={`bg-gradient-to-br ${card.bgGradient} rounded-xl shadow-lg p-5 border backdrop-blur-sm w-full ${
-                isDark ? 'border-slate-700' : 'border-white/50'
-              }`}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className={`p-2.5 rounded-lg bg-gradient-to-r ${card.gradient} shadow-md`}>
-                  <card.icon className="h-5 w-5 text-white" />
-                </div>
-                <div className="text-right">
-                  <p className={`text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{card.value}</p>
-                </div>
-              </div>
-              <div>
-                <p className={`text-sm font-semibold mb-1 ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>{card.title}</p>
-                <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{card.description}</p>
-              </div>
-            </motion.div>
-          ))}
+        {/* Analytics Overview Cards - Responsive */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 w-full">
+  {[
+    {
+      title: 'Overall Attendance',
+      value: `${attendanceSummary.percentage}%`,
+      description: 'Based on your records',
+      icon: BarChart3,
+      color: 'emerald',
+      gradient: 'from-emerald-500 to-emerald-600',
+      bgGradient: isDark ? 'from-emerald-900/20 to-emerald-800/20' : 'from-emerald-50 to-emerald-100'
+    },
+    {
+      title: 'Messages Received',
+      value: messages.length,
+      description: `${messages.filter(m => !m.isRead).length} unread messages`,
+      icon: Mail,
+      color: 'blue',
+      gradient: 'from-blue-500 to-blue-600',
+      bgGradient: isDark ? 'from-blue-900/20 to-blue-800/20' : 'from-blue-50 to-blue-100'
+    },
+    {
+      title: 'Class Ranking',
+      value: '#3',
+      description: 'Out of 45 students',
+      icon: Award,
+      color: 'yellow',
+      gradient: 'from-yellow-500 to-yellow-600',
+      bgGradient: isDark ? 'from-yellow-900/20 to-yellow-800/20' : 'from-yellow-50 to-yellow-100'
+    }
+  ].map((card, index) => (
+    <motion.div
+      key={card.title}
+      variants={itemVariants}
+      whileHover={{ 
+        scale: 1.02,
+        y: -4,
+        transition: { type: "spring", stiffness: 400 }
+      }}
+      className={`bg-gradient-to-br ${card.bgGradient} rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-5 border backdrop-blur-sm w-full ${
+        isDark ? 'border-slate-700' : 'border-white/50'
+      }`}
+    >
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <div className={`p-2 sm:p-2.5 rounded-lg bg-gradient-to-r ${card.gradient} shadow-md`}>
+          <card.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
         </div>
+        <div className="text-right">
+          <p className={`text-xl sm:text-2xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>{card.value}</p>
+        </div>
+      </div>
+      <div>
+        <p className={`text-sm font-semibold mb-1 ${isDark ? 'text-slate-200' : 'text-gray-800'}`}>{card.title}</p>
+        <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{card.description}</p>
+      </div>
+    </motion.div>
+  ))}
+</div>
       </motion.div>
 
       {/* Main Content Card */}
@@ -664,55 +667,107 @@ export default function StudentDashboard() {
           }`}
         >
           {/* Enhanced Tabs */}
-          <div className={`border-b w-full transition-all duration-300 ${
-            isDark 
-              ? 'border-slate-600 bg-gradient-to-r from-amber-900/20 to-slate-800/50' 
-              : 'border-gray-200 bg-gradient-to-r from-amber-50 to-amber-100'
-          }`}>
-            <nav className="flex w-full">
-              {[
-                { key: 'overview', label: 'Dashboard Overview', icon: BarChart3 },
-                { key: 'attendance', label: 'Attendance Record', icon: Calendar, badge: attendance.length },
-                { key: 'messages', label: 'Messages', icon: Mail, badge: messages.filter(m => !m.isRead).length, hasNotification: hasNewMessages }
-              ].map((tab) => (
-                <motion.button
-                  key={tab.key}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => setActiveTab(tab.key as 'overview' | 'attendance' | 'messages')}
-                  className={`flex items-center justify-center px-4 py-5 text-sm font-medium border-b-2 transition-all duration-300 flex-1 relative ${
-                    activeTab === tab.key
-                      ? isDark 
-                        ? 'border-amber-400 text-amber-300 bg-slate-800/50 shadow-sm'
-                        : 'border-amber-500 text-amber-700 bg-white shadow-sm'
-                      : isDark
-                        ? 'border-transparent text-slate-400 hover:text-amber-300 hover:border-amber-400/50'
-                        : 'border-transparent text-gray-600 hover:text-amber-600 hover:border-amber-300'
-                  }`}
-                >
-                  <tab.icon className="h-5 w-5 mr-2" />
-                  <span className="whitespace-nowrap">{tab.label}</span>
-                  {tab.badge !== undefined && tab.badge > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      className={`ml-2 px-2 py-1 text-xs rounded-full font-semibold transition-colors duration-300 ${
-                        activeTab === tab.key
-                          ? isDark 
-                            ? 'bg-amber-900/30 text-amber-300 border border-amber-700/50'
-                            : 'bg-amber-100 text-amber-800'
-                          : isDark
-                            ? 'bg-slate-700/50 text-slate-300'
-                            : 'bg-amber-500 text-white'
-                      }`}
-                    >
-                      {tab.badge}
-                    </motion.span>
-                  )}
-                </motion.button>
-              ))}
-            </nav>
+          {/* Enhanced Tabs - Responsive */}
+<div className={`border-b w-full transition-all duration-300 ${
+  isDark 
+    ? 'border-slate-600 bg-gradient-to-r from-amber-900/20 to-slate-800/50' 
+    : 'border-gray-200 bg-gradient-to-r from-amber-50 to-amber-100'
+}`}>
+  {/* Desktop Tabs - Hidden on Mobile */}
+  <nav className="hidden md:flex w-full">
+    {[
+      { key: 'overview', label: 'Dashboard Overview', icon: BarChart3 },
+      { key: 'attendance', label: 'Attendance Record', icon: Calendar, badge: attendance.length },
+      { key: 'messages', label: 'Messages', icon: Mail, badge: messages.filter(m => !m.isRead).length, hasNotification: hasNewMessages }
+    ].map((tab) => (
+      <motion.button
+        key={tab.key}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onClick={() => setActiveTab(tab.key as 'overview' | 'attendance' | 'messages')}
+        className={`flex items-center justify-center px-4 py-5 text-sm font-medium border-b-2 transition-all duration-300 flex-1 relative ${
+          activeTab === tab.key
+            ? isDark 
+              ? 'border-amber-400 text-amber-300 bg-slate-800/50 shadow-sm'
+              : 'border-amber-500 text-amber-700 bg-white shadow-sm'
+            : isDark
+              ? 'border-transparent text-slate-400 hover:text-amber-300 hover:border-amber-400/50'
+              : 'border-transparent text-gray-600 hover:text-amber-600 hover:border-amber-300'
+        }`}
+      >
+        <tab.icon className="h-5 w-5 mr-2" />
+        <span className="whitespace-nowrap">{tab.label}</span>
+        {tab.badge !== undefined && tab.badge > 0 && (
+          <motion.span
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className={`ml-2 px-2 py-1 text-xs rounded-full font-semibold transition-colors duration-300 ${
+              activeTab === tab.key
+                ? isDark 
+                  ? 'bg-amber-900/30 text-amber-300 border border-amber-700/50'
+                  : 'bg-amber-100 text-amber-800'
+                : isDark
+                  ? 'bg-slate-700/50 text-slate-300'
+                  : 'bg-amber-500 text-white'
+            }`}
+          >
+            {tab.badge}
+          </motion.span>
+        )}
+      </motion.button>
+    ))}
+  </nav>
+
+  {/* Mobile Bottom Navigation - Visible only on Mobile */}
+  <div className="md:hidden">
+    <div className="flex items-center justify-around p-2">
+      {[
+        { key: 'overview', label: 'Home', icon: BarChart3 },
+        { key: 'attendance', label: 'Attendance', icon: Calendar, badge: attendance.length },
+        { key: 'messages', label: 'Messages', icon: Mail, badge: messages.filter(m => !m.isRead).length, hasNotification: hasNewMessages }
+      ].map((tab) => (
+        <motion.button
+          key={tab.key}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setActiveTab(tab.key as 'overview' | 'attendance' | 'messages')}
+          className={`relative flex flex-col items-center px-3 py-2 rounded-xl transition-all duration-300 ${
+            activeTab === tab.key
+              ? isDark
+                ? 'bg-amber-900/30 text-amber-300'
+                : 'bg-amber-100 text-amber-700'
+              : isDark
+                ? 'text-slate-400'
+                : 'text-gray-500'
+          }`}
+        >
+          <div className="relative">
+            <tab.icon className="h-5 w-5" />
+            {tab.hasNotification && (
+              <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+            )}
           </div>
+          <span className="text-xs mt-1 font-medium">{tab.label}</span>
+          {tab.badge !== undefined && tab.badge > 0 && activeTab !== tab.key && (
+            <span className={`absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center text-[10px] font-bold rounded-full ${
+              isDark ? 'bg-amber-500 text-white' : 'bg-amber-500 text-white'
+            }`}>
+              {tab.badge}
+            </span>
+          )}
+          {activeTab === tab.key && (
+            <motion.div
+              layoutId="activeMobileTab"
+              className={`absolute -bottom-1 w-8 h-0.5 rounded-full ${
+                isDark ? 'bg-amber-400' : 'bg-amber-500'
+              }`}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            />
+          )}
+        </motion.button>
+      ))}
+    </div>
+  </div>
+</div>
 
           <div className="p-8 w-full">
             <AnimatePresence mode="wait">
@@ -728,12 +783,12 @@ export default function StudentDashboard() {
                 >
                   {/* Department Information Card - Enhanced like Staff Dashboard */}
                   
-                  {userDepartment && (
+{userDepartment && (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
     whileHover={{ scale: 1.02 }}
-    className={`relative rounded-2xl p-6 backdrop-blur-sm border ${
+    className={`relative rounded-xl sm:rounded-2xl p-4 sm:p-6 backdrop-blur-sm border ${
       isDark 
         ? 'bg-slate-800/60 border-slate-700' 
         : 'bg-white/80 border-blue-100'
@@ -748,33 +803,33 @@ export default function StudentDashboard() {
         ]
       }}
       transition={{ duration: 3, repeat: Infinity, repeatType: "reverse" }}
-      className="absolute inset-0 rounded-2xl"
+      className="absolute inset-0 rounded-xl sm:rounded-2xl"
     />
     
     <div className="relative">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center space-x-3">
+      {/* Header - Responsive */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 mb-4">
+        <div className="flex items-center space-x-2 sm:space-x-3 w-full sm:w-auto">
           <motion.div
             whileHover={{ scale: 1.1, rotate: 5 }}
-            className={`p-3 rounded-xl ${
+            className={`p-2 sm:p-3 rounded-lg sm:rounded-xl flex-shrink-0 ${
               isDark 
                 ? 'bg-blue-600/20 border border-blue-500/30' 
                 : 'bg-blue-500/10 border border-blue-400/30'
             }`}
           >
-            <Building2 className={`h-5 w-5 ${isDark ? 'text-blue-300' : 'text-blue-600'}`} />
+            <Building2 className={`h-4 w-4 sm:h-5 sm:w-5 ${isDark ? 'text-blue-300' : 'text-blue-600'}`} />
           </motion.div>
-          <div>
+          <div className="min-w-0 flex-1">
             <motion.h3
               whileHover={{ x: 2 }}
-              className={`font-semibold text-lg ${isDark ? 'text-white' : 'text-gray-900'}`}
+              className={`font-semibold text-base sm:text-lg truncate ${isDark ? 'text-white' : 'text-gray-900'}`}
             >
               {userDepartment.name}
             </motion.h3>
             <motion.p
               whileHover={{ x: 2 }}
-              className={`text-sm ${isDark ? 'text-slate-400' : 'text-gray-600'}`}
+              className={`text-xs sm:text-sm truncate ${isDark ? 'text-slate-400' : 'text-gray-600'}`}
             >
               Academic Department
             </motion.p>
@@ -785,7 +840,7 @@ export default function StudentDashboard() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(`/profile/student/${user?.id}`)}
-          className={`px-4 py-2 text-xs font-medium rounded-xl border backdrop-blur-sm ${
+          className={`w-full sm:w-auto px-3 sm:px-4 py-2 text-xs font-medium rounded-lg sm:rounded-xl border backdrop-blur-sm ${
             isDark 
               ? 'bg-slate-700/50 text-blue-300 border-slate-600 hover:bg-slate-600/50' 
               : 'bg-white/50 text-blue-600 border-blue-200 hover:bg-white'
@@ -801,7 +856,7 @@ export default function StudentDashboard() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className={`text-sm leading-relaxed mb-4 ${
+          className={`text-xs sm:text-sm leading-relaxed mb-4 line-clamp-2 sm:line-clamp-none ${
             isDark ? 'text-slate-300' : 'text-gray-700'
           }`}
         >
@@ -814,10 +869,10 @@ export default function StudentDashboard() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="flex justify-between pt-4 border-t border-gray-200 dark:border-slate-700"
+        className="flex flex-wrap justify-between pt-4 border-t border-gray-200 dark:border-slate-700 gap-3"
       >
         {user?.class && (
-          <div className="text-center">
+          <div className="text-center flex-1">
             <p className={`text-sm font-semibold ${isDark ? 'text-green-400' : 'text-green-600'}`}>
               {user.class.name}
             </p>
@@ -828,8 +883,8 @@ export default function StudentDashboard() {
         )}
         
         {userDepartment.head && (
-          <div className="text-center">
-            <p className={`text-sm font-semibold ${isDark ? 'text-purple-400' : 'text-purple-600'}`}>
+          <div className="text-center flex-1">
+            <p className={`text-sm font-semibold truncate ${isDark ? 'text-purple-400' : 'text-purple-600'}`}>
               {userDepartment.head.name}
             </p>
             <p className={`text-xs ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>
@@ -1365,380 +1420,404 @@ export default function StudentDashboard() {
                   className="space-y-6 w-full"
                 >
                   {/* Messages Header */}
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <h3 className={`text-xl font-bold ${darkTextClass}`}>Your Messages</h3>
-                      <p className={`text-sm ${darkSubtextClass}`}>
-                        {unreadCount > 0 
-                          ? `${unreadCount} unread message${unreadCount > 1 ? 's' : ''}`
-                          : 'All messages read'
-                        }
-                      </p>
-                    </div>
-                    <div className="flex space-x-3">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setShowMessageForm(true)}
-                        className={`flex items-center px-4 py-2 rounded-xl font-medium transition-colors ${
-                          isDark 
-                            ? 'bg-green-900/30 text-green-300 hover:bg-green-800/30' 
-                            : 'bg-green-100 text-green-700 hover:bg-green-200'
-                        }`}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-2" />
-                        Ask Question
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={loadMessages}
-                        className={`flex items-center px-4 py-2 rounded-xl font-medium transition-colors ${
-                          isDark 
-                            ? 'bg-blue-900/30 text-blue-300 hover:bg-blue-800/30' 
-                            : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                        }`}
-                      >
-                        <LucideRefreshCcwDot className="h-4 w-4 mr-2" />
-                        Refresh
-                      </motion.button>
-                    </div>
-                  </div>
+                  {/* Messages Header - Responsive */}
+<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 sm:mb-6">
+  <div>
+    <h3 className={`text-lg sm:text-xl font-bold ${darkTextClass}`}>Your Messages</h3>
+    <p className={`text-xs sm:text-sm ${darkSubtextClass}`}>
+      {unreadCount > 0 
+        ? `${unreadCount} unread message${unreadCount > 1 ? 's' : ''}`
+        : 'All messages read'
+      }
+    </p>
+  </div>
+  
+  {/* Action Buttons - Stack vertically on mobile, horizontal on desktop */}
+  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={() => setShowMessageForm(true)}
+      className={`flex items-center justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg sm:rounded-xl text-sm font-medium transition-colors w-full sm:w-auto ${
+        isDark 
+          ? 'bg-green-900/30 text-green-300 hover:bg-green-800/30' 
+          : 'bg-green-100 text-green-700 hover:bg-green-200'
+      }`}
+    >
+      <MessageSquare className="h-4 w-4 mr-2 flex-shrink-0" />
+      <span>Ask Question</span>
+    </motion.button>
+    
+    <motion.button
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      onClick={loadMessages}
+      className={`flex items-center justify-center sm:justify-start px-3 sm:px-4 py-2.5 sm:py-2 rounded-lg sm:rounded-xl text-sm font-medium transition-colors w-full sm:w-auto ${
+        isDark 
+          ? 'bg-blue-900/30 text-blue-300 hover:bg-blue-800/30' 
+          : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+      }`}
+    >
+      <LucideRefreshCcwDot className="h-4 w-4 mr-2 flex-shrink-0" />
+      <span>Refresh</span>
+    </motion.button>
+  </div>
+</div>
 
                   {loading ? (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="text-center py-16 w-full"
-                    >
-                      <motion.div
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                        className="rounded-full h-12 w-12 border-4 border-amber-500 border-t-transparent mx-auto mb-4"
-                      />
-                      <p className={`font-medium ${darkSubtextClass}`}>Loading messages...</p>
-                    </motion.div>
-                  ) : messages.length === 0 ? (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className={`text-center py-16 rounded-2xl border-2 border-dashed ${
-                        isDark 
-                          ? 'bg-slate-800/50 border-slate-600' 
-                          : 'bg-amber-50 border-amber-300'
-                      }`}
-                    >
-                      <Mail className={`h-16 w-16 mx-auto mb-4 ${
-                        isDark ? 'text-slate-500' : 'text-amber-400'
-                      }`} />
-                      <p className={`font-medium text-lg ${
-                        isDark ? 'text-slate-400' : 'text-amber-700'
-                      }`}>No messages received</p>
-                      <p className={`mt-1 ${
-                        isDark ? 'text-slate-500' : 'text-amber-600'
-                      }`}>Messages from staff will appear here</p>
-                    </motion.div>
-                  ) : (
-                    <div className="space-y-4 w-full">
-                      {messages.map((message, index) => (
-                        <motion.div
-                          key={message.id}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.1 }}
-                          whileHover={{ scale: 1.01 }}
-                          className={`rounded-2xl p-6 border-2 shadow-lg transition-all duration-300 w-full ${
-                            message.isRead 
-                              ? isDark
-                                ? 'bg-slate-800/30 border-slate-700'
-                                : 'bg-white border-amber-200'
-                              : isDark
-                                ? 'bg-gradient-to-r from-amber-900/20 to-slate-800/50 border-amber-500/30 shadow-xl'
-                                : 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-300 shadow-xl'
-                          }`}
-                        >
-                          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 w-full">
-                            <div className="flex items-center">
-                              <motion.div
-                                whileHover={{ scale: 1.1 }}
-                                className={`p-3 rounded-full mr-4 shadow-lg ${getSenderInfo(message).bgColor}`}
-                              >
-                                {React.createElement(getSenderInfo(message).icon, { 
-                                  className: `h-5 w-5 ${getSenderInfo(message).color}` 
-                                })}
-                              </motion.div>
-                              <div>
-                                <div className="flex flex-wrap items-center gap-2 mb-2">
-                                  <h3 className={`font-semibold text-lg ${
-                                    isDark ? 'text-white' : 'text-gray-900'
-                                  }`}>
-                                    From: {message.staff.name}
-                                  </h3>
-                                  <motion.span
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className={`px-2 py-1 rounded-full text-xs font-bold ${getSenderInfo(message).color} ${getSenderInfo(message).bgColor} border border-current shadow-sm`}
-                                  >
-                                    {getSenderInfo(message).label}
-                                  </motion.span>
-                                  {getMessageLabel(message) && (
-                                    <motion.span
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold ${getMessageLabel(message)!.color} shadow-md`}
-                                    >
-                                      {React.createElement(getMessageLabel(message)!.icon, { 
-                                        className: "h-3 w-3 mr-1" 
-                                      })}
-                                      {getMessageLabel(message)!.text}
-                                    </motion.span>
-                                  )}
-                                  {!message.isRead && (
-                                    <motion.span
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ 
-                                    scale: { type: "spring", stiffness: 300 },
-                                    opacity: { duration: 1, repeat: Infinity, repeatType: "reverse" } 
-                                    }}
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gradient-to-r from-red-700 to-red-900 text-white shadow-md"
-                                    >
-                                    NEW
-                                    </motion.span>
-                                  )}
-                                </div>
-                                <p className={`text-sm flex items-center font-medium ${
-                                  isDark ? 'text-amber-400' : 'text-amber-600'
-                                }`}>
-                                  <Clock className="h-4 w-4 mr-1" />
-                                  {formatDateTime(message.createdAt)}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                              {message.fileName && (
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => downloadFile(message.id, message.fileName!)}
-                                  className={`inline-flex items-center px-4 py-2 border text-sm font-semibold rounded-xl transition-colors shadow-md ${
-                                    isDark
-                                      ? 'border-amber-600 text-amber-300 bg-amber-900/30 hover:bg-amber-800/30'
-                                      : 'border-amber-300 text-amber-700 bg-white hover:bg-amber-50'
-                                  }`}
-                                >
-                                  <Download className="h-4 w-4 mr-2" />
-                                  Download
-                                </motion.button>
-                              )}
-                              {!message.isRead && (
-                                <motion.button
-                                  whileHover={{ scale: 1.05 }}
-                                  whileTap={{ scale: 0.95 }}
-                                  onClick={() => markMessageAsRead(message.id)}
-                                  className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-amber-600 to-amber-900 hover:from-amber-700 hover:to-amber-950 focus:outline-none transition-colors shadow-md"
-                                >
-                                  Mark as Read
-                                </motion.button>
-                              )}
-                            </div>
-                          </div>
-                          <div className={`p-4 rounded-xl border backdrop-blur-sm w-full ${
-                            isDark 
-                              ? 'bg-slate-700/30 border-slate-600' 
-                              : 'bg-white/80 border-amber-100'
-                          }`}>
-                            <p className={`leading-relaxed ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>
-                              {message.content}
-                            </p>
-                          </div>
-                          {message.fileName && (
-                            <motion.div
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: 0.2 }}
-                              className={`mt-4 pt-4 border-t w-full ${
-                                isDark ? 'border-slate-600' : 'border-amber-200'
-                              }`}
-                            >
-                              <div className={`flex items-center text-sm font-medium ${
-                                isDark ? 'text-amber-400' : 'text-amber-700'
-                              }`}>
-                                <FileText className="h-4 w-4 mr-2" />
-                                Attachment: {message.fileName}
-                              </div>
-                            </motion.div>
-                          )}
-                        </motion.div>
-                      ))}
-                    </div>
-                  )}
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="text-center py-12 sm:py-16 w-full"
+  >
+    <motion.div
+      animate={{ rotate: 360 }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+      className="rounded-full h-10 w-10 sm:h-12 sm:w-12 border-4 border-amber-500 border-t-transparent mx-auto mb-3 sm:mb-4"
+    />
+    <p className={`text-sm sm:text-base font-medium ${darkSubtextClass}`}>Loading messages...</p>
+  </motion.div>
+) : messages.length === 0 ? (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className={`text-center py-12 sm:py-16 px-4 rounded-xl sm:rounded-2xl border-2 border-dashed ${
+      isDark 
+        ? 'bg-slate-800/50 border-slate-600' 
+        : 'bg-amber-50 border-amber-300'
+    }`}
+  >
+    <Mail className={`h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-3 sm:mb-4 ${
+      isDark ? 'text-slate-500' : 'text-amber-400'
+    }`} />
+    <p className={`font-medium text-base sm:text-lg ${
+      isDark ? 'text-slate-400' : 'text-amber-700'
+    }`}>No messages received</p>
+    <p className={`mt-1 text-xs sm:text-sm ${
+      isDark ? 'text-slate-500' : 'text-amber-600'
+    }`}>Messages from staff will appear here</p>
+  </motion.div>
+) : (
+  <div className="space-y-3 sm:space-y-4 w-full">
+    {messages.map((message, index) => (
+      <motion.div
+        key={message.id}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.1 }}
+        whileHover={{ scale: 1.01 }}
+        className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 border-2 shadow-lg transition-all duration-300 w-full ${
+          message.isRead 
+            ? isDark
+              ? 'bg-slate-800/30 border-slate-700'
+              : 'bg-white border-amber-200'
+            : isDark
+              ? 'bg-gradient-to-r from-amber-900/20 to-slate-800/50 border-amber-500/30 shadow-xl'
+              : 'bg-gradient-to-r from-amber-50 to-amber-100 border-amber-300 shadow-xl'
+        }`}
+      >
+        {/* Header Section - Responsive */}
+        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 mb-4 w-full">
+          <div className="flex items-start sm:items-center w-full lg:w-auto">
+            <motion.div
+              whileHover={{ scale: 1.1 }}
+              className={`p-2 sm:p-3 rounded-full mr-3 sm:mr-4 shadow-lg flex-shrink-0 ${getSenderInfo(message).bgColor}`}
+            >
+              {React.createElement(getSenderInfo(message).icon, { 
+                className: `h-4 w-4 sm:h-5 sm:w-5 ${getSenderInfo(message).color}` 
+              })}
+            </motion.div>
+            
+            <div className="min-w-0 flex-1">
+              {/* Tags Row - Wraps on mobile */}
+              <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
+                <h3 className={`font-semibold text-sm sm:text-base lg:text-lg truncate max-w-[150px] sm:max-w-[200px] lg:max-w-none ${
+                  isDark ? 'text-white' : 'text-gray-900'
+                }`}>
+                  From: {message.staff.name}
+                </h3>
+                
+                {/* Staff Role Tag */}
+                <motion.span
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${getSenderInfo(message).color} ${getSenderInfo(message).bgColor} border border-current shadow-sm whitespace-nowrap`}
+                >
+                  {getSenderInfo(message).label}
+                </motion.span>
+                
+                {/* Message Type Tag */}
+                {getMessageLabel(message) && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className={`inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold ${getMessageLabel(message)!.color} shadow-md whitespace-nowrap`}
+                  >
+                    {React.createElement(getMessageLabel(message)!.icon, { 
+                      className: "h-2 w-2 sm:h-3 sm:w-3 mr-1" 
+                    })}
+                    {getMessageLabel(message)!.text}
+                  </motion.span>
+                )}
+                
+                {/* NEW Badge */}
+                {!message.isRead && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ 
+                      scale: { type: "spring", stiffness: 300 },
+                      opacity: { duration: 1, repeat: Infinity, repeatType: "reverse" } 
+                    }}
+                    className="inline-flex items-center px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-gradient-to-r from-red-700 to-red-900 text-white shadow-md whitespace-nowrap"
+                  >
+                    NEW
+                  </motion.span>
+                )}
+              </div>
+              
+              {/* Date */}
+              <p className={`text-xs sm:text-sm flex items-center font-medium ${
+                isDark ? 'text-amber-400' : 'text-amber-600'
+              }`}>
+                <Clock className="h-3 w-3 sm:h-4 sm:w-4 mr-1 flex-shrink-0" />
+                <span className="truncate">{formatDateTime(message.createdAt)}</span>
+              </p>
+            </div>
+          </div>
+          
+          {/* Action Buttons - Stack on mobile, row on desktop */}
+          <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
+            {message.fileName && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => downloadFile(message.id, message.fileName!)}
+                className={`flex items-center justify-center sm:justify-start px-3 sm:px-4 py-2 sm:py-2 border text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl transition-colors shadow-md w-full sm:w-auto ${
+                  isDark
+                    ? 'border-amber-600 text-amber-300 bg-amber-900/30 hover:bg-amber-800/30'
+                    : 'border-amber-300 text-amber-700 bg-white hover:bg-amber-50'
+                }`}
+              >
+                <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                <span>Download</span>
+              </motion.button>
+            )}
+            
+            {!message.isRead && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => markMessageAsRead(message.id)}
+                className="flex items-center justify-center sm:justify-start px-3 sm:px-4 py-2 sm:py-2 border border-transparent text-xs sm:text-sm font-semibold rounded-lg sm:rounded-xl text-white bg-gradient-to-r from-amber-600 to-amber-900 hover:from-amber-700 hover:to-amber-950 focus:outline-none transition-colors shadow-md w-full sm:w-auto"
+              >
+                <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+                <span>Mark as Read</span>
+              </motion.button>
+            )}
+          </div>
+        </div>
+
+        {/* Message Content */}
+        <div className={`p-3 sm:p-4 rounded-lg sm:rounded-xl border backdrop-blur-sm w-full ${
+          isDark 
+            ? 'bg-slate-700/30 border-slate-600' 
+            : 'bg-white/80 border-amber-100'
+        }`}>
+          <p className={`text-xs sm:text-sm leading-relaxed break-words ${isDark ? 'text-slate-200' : 'text-gray-700'}`}>
+            {message.content}
+          </p>
+        </div>
+
+        {/* Attachment Info */}
+        {message.fileName && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={`mt-3 sm:mt-4 pt-3 sm:pt-4 border-t w-full ${
+              isDark ? 'border-slate-600' : 'border-amber-200'
+            }`}
+          >
+            <div className={`flex items-center text-xs sm:text-sm font-medium truncate ${
+              isDark ? 'text-amber-400' : 'text-amber-700'
+            }`}>
+              <FileText className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2 flex-shrink-0" />
+              <span className="truncate">Attachment: {message.fileName}</span>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
+    ))}
+  </div>
+)}
 
                   {/* Message Form Modal */}
-                  <AnimatePresence>
-                    {showMessageForm && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-                        onClick={() => setShowMessageForm(false)}
-                      >
-                        <motion.div
-                          initial={{ scale: 0.9, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0.9, opacity: 0 }}
-                          onClick={(e) => e.stopPropagation()}
-                          className={`rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto ${
-                            isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-gray-200'
-                          }`}
-                        >
-                          <div className="flex justify-between items-center mb-6">
-                            <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                              Ask Question to Staff
-                            </h3>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => setShowMessageForm(false)}
-                              className={`p-2 rounded-lg ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}
-                            >
-                              <X className="h-5 w-5" />
-                            </motion.button>
-                          </div>
+                  {/* Message Form Modal - Responsive */}
+<AnimatePresence>
+  {showMessageForm && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4"
+      onClick={() => setShowMessageForm(false)}
+    >
+      <motion.div
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.9, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()}
+        className={`rounded-xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto ${
+          isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-gray-200'
+        }`}
+      >
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-4 sm:mb-6">
+          <h3 className={`text-lg sm:text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            Ask Question to Staff
+          </h3>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowMessageForm(false)}
+            className={`self-end sm:self-center p-2 rounded-lg ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}
+          >
+            <X className="h-4 w-4 sm:h-5 sm:w-5" />
+          </motion.button>
+        </div>
 
-                          <div className="space-y-4">
-                            {/* Staff Selection */}
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Select Staff Member
-                              </label>
-                              <select
-                                value={messageForm.staffId}
-                                onChange={(e) => setMessageForm({ ...messageForm, staffId: e.target.value })}
-                                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
-                                  isDark 
-                                    ? 'bg-slate-700 border-slate-600 text-white' 
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                }`}
-                              >
-                                <option value="">Select a staff member...</option>
-                                {assignedStaff.map((staff) => (
-                                  <option key={staff.id} value={staff.id}>
-                                    {staff.name} - {staff.email}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
+        <div className="space-y-3 sm:space-y-4">
+          {/* Staff Selection */}
+          <div>
+            <label className={`block text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${
+              isDark ? 'text-slate-300' : 'text-gray-700'
+            }`}>
+              Select Staff Member
+            </label>
+            <select
+              value={messageForm.staffId}
+              onChange={(e) => setMessageForm({ ...messageForm, staffId: e.target.value })}
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
+                isDark 
+                  ? 'bg-slate-700 border-slate-600 text-white' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
+            >
+              <option value="">Select a staff member...</option>
+              {assignedStaff.map((staff) => (
+                <option key={staff.id} value={staff.id}>
+                  {staff.name} - {staff.email}
+                </option>
+              ))}
+            </select>
+          </div>
 
-                            {/* Message Type */}
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Message Type
-                              </label>
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                                {[
-                                  { value: 'question', label: 'Question', color: 'blue' },
-                                  { value: 'doubt', label: 'Doubt', color: 'orange' },
-                                  { value: 'clarification', label: 'Clarification', color: 'purple' },
-                                  { value: 'general', label: 'General', color: 'green' }
-                                ].map((type) => (
-                                  <motion.button
-                                    key={type.value}
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    type="button"
-                                    onClick={() => setMessageForm({ ...messageForm, messageType: type.value })}
-                                    className={`p-3 rounded-xl text-sm font-medium border-2 transition-all ${
-                                      messageForm.messageType === type.value
-                                        ? isDark
-                                          ? `border-${type.color}-500 bg-${type.color}-900/20 text-${type.color}-300`
-                                          : `border-${type.color}-500 bg-${type.color}-50 text-${type.color}-700`
-                                        : isDark
-                                          ? 'border-slate-600 text-slate-300 hover:border-slate-500'
-                                          : 'border-gray-300 text-gray-700 hover:border-gray-400'
-                                    }`}
-                                  >
-                                    {type.label}
-                                  </motion.button>
-                                ))}
-                              </div>
-                            </div>
+          {/* Message Type - Grid */}
+          <div>
+            <label className={`block text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${
+              isDark ? 'text-slate-300' : 'text-gray-700'
+            }`}>
+              Message Type
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'question', label: 'Question', color: 'blue' },
+                { value: 'doubt', label: 'Doubt', color: 'orange' },
+                { value: 'clarification', label: 'Clarification', color: 'purple' },
+                { value: 'general', label: 'General', color: 'green' }
+              ].map((type) => (
+                <motion.button
+                  key={type.value}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  type="button"
+                  onClick={() => setMessageForm({ ...messageForm, messageType: type.value })}
+                  className={`p-2 sm:p-3 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium border-2 transition-all ${
+                    messageForm.messageType === type.value
+                      ? isDark
+                        ? `border-${type.color}-500 bg-${type.color}-900/20 text-${type.color}-300`
+                        : `border-${type.color}-500 bg-${type.color}-50 text-${type.color}-700`
+                      : isDark
+                        ? 'border-slate-600 text-slate-300 hover:border-slate-500'
+                        : 'border-gray-300 text-gray-700 hover:border-gray-400'
+                  }`}
+                >
+                  {type.label}
+                </motion.button>
+              ))}
+            </div>
+          </div>
 
-                            {/* Message Content */}
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Your Message
-                              </label>
-                              <textarea
-                                value={messageForm.content}
-                                onChange={(e) => setMessageForm({ ...messageForm, content: e.target.value })}
-                                placeholder="Type your question or message here..."
-                                rows={4}
-                                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none ${
-                                  isDark 
-                                    ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
-                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                }`}
-                              />
-                            </div>
+          {/* Message Content */}
+          <div>
+            <label className={`block text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${
+              isDark ? 'text-slate-300' : 'text-gray-700'
+            }`}>
+              Your Message
+            </label>
+            <textarea
+              value={messageForm.content}
+              onChange={(e) => setMessageForm({ ...messageForm, content: e.target.value })}
+              placeholder="Type your question or message here..."
+              rows={4}
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none ${
+                isDark 
+                  ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
+                  : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+              }`}
+            />
+          </div>
 
-                            {/* File Upload */}
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Attachment (Optional)
-                              </label>
-                              <input
-                                type="file"
-                                onChange={(e) => setMessageForm({ ...messageForm, file: e.target.files?.[0] || null })}
-                                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
-                                  isDark 
-                                    ? 'bg-slate-700 border-slate-600 text-white' 
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                }`}
-                              />
-                              {messageForm.file && (
-                                <p className={`text-sm mt-2 ${
-                                  isDark ? 'text-slate-400' : 'text-gray-600'
-                                }`}>
-                                  Selected: {messageForm.file.name}
-                                </p>
-                              )}
-                            </div>
-                          </div>
+          {/* File Upload */}
+          <div>
+            <label className={`block text-xs sm:text-sm font-medium mb-1 sm:mb-2 ${
+              isDark ? 'text-slate-300' : 'text-gray-700'
+            }`}>
+              Attachment (Optional)
+            </label>
+            <input
+              type="file"
+              onChange={(e) => setMessageForm({ ...messageForm, file: e.target.files?.[0] || null })}
+              className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-sm border rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${
+                isDark 
+                  ? 'bg-slate-700 border-slate-600 text-white' 
+                  : 'bg-white border-gray-300 text-gray-900'
+              }`}
+            />
+            {messageForm.file && (
+              <p className={`text-xs sm:text-sm mt-2 truncate ${
+                isDark ? 'text-slate-400' : 'text-gray-600'
+              }`}>
+                Selected: {messageForm.file.name}
+              </p>
+            )}
+          </div>
+        </div>
 
-                          {/* Action Buttons */}
-                          <div className="flex justify-end space-x-3 mt-6">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => setShowMessageForm(false)}
-                              className="px-6 py-3 rounded-xl font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
-                            >
-                              Cancel
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={sendMessageToStaff}
-                              disabled={messageLoading || !messageForm.staffId || !messageForm.content.trim()}
-                              className="px-6 py-3 rounded-xl font-medium text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {messageLoading ? 'Sending...' : 'Send Message'}
-                            </motion.button>
-                          </div>
-                        </motion.div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+        {/* Action Buttons */}
+        <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 mt-4 sm:mt-6">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setShowMessageForm(false)}
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-medium text-sm sm:text-base text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            Cancel
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={sendMessageToStaff}
+            disabled={messageLoading || !messageForm.staffId || !messageForm.content.trim()}
+            className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-medium text-sm sm:text-base text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {messageLoading ? 'Sending...' : 'Send Message'}
+          </motion.button>
+        </div>
+      </motion.div>
+    </motion.div>
+  )}
+</AnimatePresence>
                 </motion.div>
               )}
             </AnimatePresence>

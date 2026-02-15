@@ -12,11 +12,11 @@ const router = express.Router();
 router.get('/test', authenticateToken, async (req, res) => {
   try {
     console.log('Testing Message model...');
-    
+
     // Check table structure
     const tableInfo = await Message.describe();
     console.log('Message table structure:', tableInfo);
-    
+
     const testMessage = {
       content: 'Test message',
       senderId: req.user.id,
@@ -26,22 +26,22 @@ router.get('/test', authenticateToken, async (req, res) => {
       isStaffMessage: true
     };
     console.log('Test message data:', testMessage);
-    
+
     // Just test the model without creating
     const result = await Message.build(testMessage);
     console.log('Model build successful:', result.toJSON());
-    
-    res.json({ 
-      success: true, 
+
+    res.json({
+      success: true,
       message: 'Message model test passed',
       testData: result.toJSON(),
       tableStructure: tableInfo
     });
   } catch (error) {
     console.error('Message model test failed:', error);
-    res.status(500).json({ 
-      error: 'Message model test failed', 
-      details: error.message 
+    res.status(500).json({
+      error: 'Message model test failed',
+      details: error.message
     });
   }
 });
@@ -111,7 +111,7 @@ router.post('/send', authenticateToken, upload.single('file'), async (req, res) 
     if (sender.role === 'STAFF' && recipient.role !== 'SUPER_ADMIN') {
       return res.status(403).json({ error: 'Staff can only send messages to Super Admin' });
     }
-    
+
     if (sender.role === 'SUPER_ADMIN' && recipient.role !== 'STAFF') {
       return res.status(403).json({ error: 'Super Admin can only send messages to Staff' });
     }
@@ -135,24 +135,24 @@ router.post('/send', authenticateToken, upload.single('file'), async (req, res) 
         staffId: parseInt(senderId), // Store sender in staffId
         studentId: parseInt(recipientId), // Store recipient in studentId temporarily
       };
-      
+
       // Add file info if exists
       if (req.file) {
         staffMessageData.filePath = req.file.path;
         staffMessageData.fileName = req.file.originalname;
       }
-      
+
       console.log('Creating staff message with compatible data:', staffMessageData);
       message = await Message.create(staffMessageData, { validate: false });
       console.log('Staff message created successfully:', message.id);
-      
+
     } catch (createError) {
       console.error('Staff message creation failed:', createError);
       console.error('Error details:', createError.message);
-      
+
       // Return a more specific error
-      return res.status(500).json({ 
-        error: 'Failed to create staff message', 
+      return res.status(500).json({
+        error: 'Failed to create staff message',
         details: createError.message,
         hint: 'Database table may need updating. Check server logs.'
       });
@@ -184,7 +184,7 @@ router.post('/send', authenticateToken, upload.single('file'), async (req, res) 
     console.error('Send staff message error:', error);
     console.error('Error details:', error.message);
     console.error('Error stack:', error.stack);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Internal server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
@@ -252,7 +252,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
     // Transform messages to include sender/recipient info
     const transformedMessages = messages.map(msg => {
       const messageData = msg.toJSON();
-      
+
       // Extract sender/recipient from content if using fallback approach
       if (messageData.content && messageData.content.includes('[STAFF MESSAGE]')) {
         const contentMatch = messageData.content.match(/From: (.+?) \((.+?)\) To: (.+?) \((.+?)\)/);
@@ -269,7 +269,7 @@ router.get('/conversations', authenticateToken, async (req, res) => {
           messageData.messageType = messageData.staffId === userId ? 'STAFF_TO_ADMIN' : 'ADMIN_TO_STAFF';
         }
       }
-      
+
       return messageData;
     });
 
@@ -339,7 +339,7 @@ router.get('/unread-count', authenticateToken, async (req, res) => {
 router.get('/staff-list', authenticateToken, requireRole('SUPER_ADMIN'), async (req, res) => {
   try {
     const { departmentId } = req.query;
-    
+
     const whereCondition = {
       role: 'STAFF',
       isActive: true

@@ -1331,52 +1331,52 @@ const exportLastWeekToPDF = async () => {
       }`}
     >
       {/* Enhanced Header with Better Navigation */}
+{/* Enhanced Header with Better Navigation */}
 <motion.div
   initial={{ y: -100, opacity: 0 }}
   animate={{ y: 0, opacity: 1 }}
   transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-  className={`px-7 py-5 text-white p-6 shadow-2xl rounded-2xl transition-all duration-300 ${
+  className={`px-4 sm:px-7 py-4 sm:py-5 text-white shadow-2xl rounded-2xl transition-all duration-300 ${
     isDark 
       ? 'bg-gradient-to-r from-slate-900 to-slate-800 border-b border-slate-700' 
       : 'bg-gradient-to-r from-emerald-900 to-emerald-200 border-b border-emerald-300'
   }`}
 >
-  <div className="flex justify-between items-center">
+  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
     <motion.div 
-      className="flex items-center"
+      className="flex items-center w-full sm:w-auto"
       whileHover={{ scale: 1.02 }}
       transition={{ type: "spring", stiffness: 300 }}
     >
       <motion.div
         whileHover={{ scale: 1.1, rotate: 5 }}
-        className={`p-3 rounded-2xl mr-4 backdrop-blur-sm cursor-pointer ${
+        className={`p-2 sm:p-3 rounded-2xl mr-3 sm:mr-4 backdrop-blur-sm cursor-pointer flex-shrink-0 ${
           isDark ? 'bg-emerald-800/50' : 'bg-emerald-700/50'
         }`}
         onClick={() => navigate(`/profile/staff/${user?.id}`)}
       >
-        <Users className="h-8 w-8" />
+        <Users className="h-6 w-6 sm:h-8 sm:w-8" />
       </motion.div>
-      <div>
+      <div className="min-w-0 flex-1">
         <div className="cursor-pointer" onClick={() => navigate(`/profile/staff/${user?.id}`)}>
-          <h1 className="text-3xl font-bold font-sans tracking-tight bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent hover:from-emerald-100 hover:to-emerald-200 transition-colors">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold font-sans tracking-tight bg-gradient-to-r from-white to-purple-100 bg-clip-text text-transparent hover:from-emerald-100 hover:to-emerald-200 transition-colors truncate">
             Staff Portal {user?.managedClass?.name ? `- ${user.managedClass.name}` : ''}
           </h1>
-          <p className={`transition-colors duration-300 ${
+          <p className={`text-xs sm:text-sm transition-colors duration-300 truncate ${
             isDark ? 'text-emerald-200' : 'text-emerald-100'
-          }`}>{userDepartment?.name || 'Department: Not assigned'} • Manage attendance and communicate with students</p>
+          }`}>{userDepartment?.name || 'Department: Not assigned'} • Manage attendance</p>
         </div>
       </div>
     </motion.div>
-    <div className="flex items-center space-x-4">
-      
+    <div className="flex items-center space-x-2 sm:space-x-4 w-full sm:w-auto justify-end">
       <motion.div 
-        className={`flex items-center px-3 py-2 rounded-lg backdrop-blur-sm ${
+        className={`flex items-center px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg backdrop-blur-sm ${
           isDark ? 'bg-emerald-800/50' : 'bg-emerald-700'
         }`}
         whileHover={{ scale: 1.05 }}
       >
-        <Calendar className="h-5 w-5 mr-2" />
-        <span>{new Date().toLocaleDateString()}</span>
+        <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
+        <span className="text-xs sm:text-sm">{new Date().toLocaleDateString()}</span>
       </motion.div>
     </div>
   </div>
@@ -1392,7 +1392,112 @@ const exportLastWeekToPDF = async () => {
         animate="visible"
       >
         {/* Primary Metrics Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+{/* Primary Metrics Row - Responsive Carousel */}
+<div className="relative overflow-hidden mb-6">
+  {/* Desktop Grid (hidden on mobile) */}
+  <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    {[
+      { 
+        label: 'Total Students', 
+        value: stats.totalStudents, 
+        icon: Users, 
+        color: 'emerald',
+        gradient: 'from-emerald-900 to-emerald-600',
+        bgGradient: 'from-emerald-50 to-emerald-100',
+        change: '+5 this week',
+        trend: 'up'
+      },
+      { 
+        label: 'Present Today', 
+        value: stats.presentToday, 
+        icon: CheckCircle, 
+        color: 'green',
+        gradient: 'from-green-900 to-green-600',
+        bgGradient: 'from-green-50 to-green-100',
+        change: `${stats.averageAttendance}% rate`,
+        trend: 'up'
+      },
+      { 
+        label: 'Absent Today', 
+        value: stats.absentToday, 
+        icon: XCircle, 
+        color: 'red',
+        gradient: 'from-red-800 to-red-700',
+        bgGradient: 'from-red-50 to-red-100',
+        change: stats.absentToday > stats.presentToday ? 'High' : 'Normal',
+        trend: stats.absentToday > stats.presentToday ? 'down' : 'up'
+      },
+      { 
+        label: 'Attendance Rate', 
+        value: `${stats.averageAttendance}%`, 
+        icon: TrendingUp, 
+        color: stats.averageAttendance >= 80 ? 'green' : 'orange',
+        gradient: stats.averageAttendance >= 80 ? 'from-green-800 to-green-600' : 'from-orange-500 to-orange-600',
+        bgGradient: stats.averageAttendance >= 80 ? 'from-green-50 to-green-100' : 'from-orange-50 to-orange-100',
+        change: stats.averageAttendance >= 80 ? 'Excellent' : 'Needs attention',
+        trend: stats.averageAttendance >= 80 ? 'up' : 'down'
+      }
+    ].map((stat, index) => (
+      <motion.div
+        key={stat.label}
+        variants={itemVariants}
+        whileHover={{ 
+          scale: 1.03,
+          y: -8,
+          transition: { type: "spring", stiffness: 400, damping: 10 }
+        }}
+        className={`${getRoleCardClass()} rounded-2xl shadow-lg p-6 border backdrop-blur-sm relative overflow-hidden`}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
+        <div className="relative">
+          <div className="flex justify-between items-start mb-4">
+            <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
+              <stat.icon className="h-6 w-6 text-white" />
+            </div>
+            <div className={`flex items-center text-xs font-medium px-2 py-1 rounded-full ${
+              stat.trend === 'up' 
+                ? 'bg-gradient-to-r from-emerald-700 to-emerald-400/2 text-black-700' 
+                : 'bg-gradient-to-r from-red-700 to-red-400 text-black-700'
+            }`}>
+              <TrendingUp className={`h-3 w-3 mr-1 ${stat.trend === 'down' ? 'rotate-180' : ''}`} />
+              {stat.trend === 'up' ? '↗' : '↘'}
+            </div>
+          </div>
+          <div>
+            <p className={`text-sm font-medium mb-1 transition-colors duration-300 ${
+              isDark ? 'text-slate-300' : 'text-gray-700'
+            }`}>{stat.label}</p>
+            <p className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+              isDark ? 'text-white' : 'text-gray-900'
+            }`}>{stat.value}</p>
+            <p className={`text-xs font-medium transition-colors duration-300 ${
+              isDark ? 'text-slate-400' : 'text-gray-600'
+            }`}>{stat.change}</p>
+          </div>
+        </div>
+      </motion.div>
+    ))}
+  </div>
+
+  {/* Mobile Carousel (visible only on mobile) */}
+  <div className="md:hidden">
+    <style jsx>{`
+      .carousel-container {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+      .carousel-container::-webkit-scrollbar {
+        display: none;
+      }
+    `}</style>
+    
+    <div className="relative">
+      <motion.div 
+        className="carousel-container overflow-x-auto snap-x snap-mandatory"
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      >
+        <div className="flex gap-4 px-4 pb-4">
           {[
             { 
               label: 'Total Students', 
@@ -1437,34 +1542,32 @@ const exportLastWeekToPDF = async () => {
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.03,
-                y: -8,
-                transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
-              className={`${getRoleCardClass()} rounded-2xl shadow-lg p-6 border backdrop-blur-sm relative overflow-hidden`}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: index * 0.1 }}
+              whileTap={{ scale: 0.98 }}
+              className={`${getRoleCardClass()} rounded-2xl shadow-lg p-5 border backdrop-blur-sm relative overflow-hidden min-w-[280px] snap-center`}
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
               <div className="relative">
-                <div className="flex justify-between items-start mb-4">
-                  <div className={`p-3 rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
-                    <stat.icon className="h-6 w-6 text-white" />
+                <div className="flex justify-between items-start mb-3">
+                  <div className={`p-2.5 rounded-xl bg-gradient-to-r ${stat.gradient} shadow-lg`}>
+                    <stat.icon className="h-5 w-5 text-white" />
                   </div>
                   <div className={`flex items-center text-xs font-medium px-2 py-1 rounded-full ${
-                  stat.trend === 'up' 
-                    ? 'bg-gradient-to-r from-emerald-700 to-emerald-400/2 text-black-700' 
-                    : 'bg-gradient-to-r from-red-700 to-red-400 text-black-700'
-                   }`}>
-                  <TrendingUp className={`h-3 w-3 mr-1 ${stat.trend === 'down' ? 'rotate-180' : ''}`} />
-                  {stat.trend === 'up' ? '↗' : '↘'}
-                </div>
+                    stat.trend === 'up' 
+                      ? 'bg-gradient-to-r from-emerald-700 to-emerald-400/2 text-black-700' 
+                      : 'bg-gradient-to-r from-red-700 to-red-400 text-black-700'
+                  }`}>
+                    <TrendingUp className={`h-3 w-3 mr-1 ${stat.trend === 'down' ? 'rotate-180' : ''}`} />
+                    {stat.trend === 'up' ? '↗' : '↘'}
+                  </div>
                 </div>
                 <div>
                   <p className={`text-sm font-medium mb-1 transition-colors duration-300 ${
                     isDark ? 'text-slate-300' : 'text-gray-700'
                   }`}>{stat.label}</p>
-                  <p className={`text-3xl font-bold mb-2 transition-colors duration-300 ${
+                  <p className={`text-2xl font-bold mb-1 transition-colors duration-300 ${
                     isDark ? 'text-white' : 'text-gray-900'
                   }`}>{stat.value}</p>
                   <p className={`text-xs font-medium transition-colors duration-300 ${
@@ -1472,9 +1575,84 @@ const exportLastWeekToPDF = async () => {
                   }`}>{stat.change}</p>
                 </div>
               </div>
+              
+              {/* Page indicator dot */}
+              {index === 0 && (
+                <div className="absolute bottom-2 right-2 flex space-x-1">
+                  {[0, 1, 2, 3].map((dot) => (
+                    <div
+                      key={dot}
+                      className={`w-1.5 h-1.5 rounded-full transition-colors ${
+                        dot === 0 ? 'bg-emerald-500' : isDark ? 'bg-slate-600' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
+      </motion.div>
+      
+      {/* Scroll indicators */}
+      <div className="flex justify-center mt-2 space-x-2">
+        {[0, 1, 2, 3].map((dot) => (
+          <motion.div
+            key={dot}
+            className={`h-1.5 rounded-full transition-all ${
+              dot === 0 
+                ? 'w-4 bg-emerald-500' 
+                : 'w-1.5 bg-gray-300 dark:bg-slate-600'
+            }`}
+            animate={{
+              width: dot === 0 ? 16 : 6,
+              backgroundColor: dot === 0 
+                ? '#10b981' 
+                : isDark ? '#475569' : '#d1d5db'
+            }}
+          />
+        ))}
+      </div>
+      
+      {/* Hint text */}
+      <p className="text-center text-xs text-gray-500 dark:text-slate-400 mt-1">
+        ← Swipe to see more →
+      </p>
+    </div>
+  </div>
+</div>
+
+{/* Secondary Metrics Row */}
+<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6 mt-4 sm:mt-6">
+  {[
+    
+  ].map((stat, index) => (
+    <motion.div
+      key={stat.label}
+      variants={itemVariants}
+      whileHover={{ 
+        scale: 1.02,
+        y: -4,
+        transition: { type: "spring", stiffness: 400 }
+      }}
+      className={`bg-gradient-to-br ${stat.bgGradient} rounded-lg sm:rounded-xl shadow-md p-4 sm:p-5 border border-white/50 backdrop-blur-sm`}
+    >
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
+        <div className={`p-2 sm:p-2.5 rounded-lg bg-gradient-to-r ${stat.gradient} shadow-md`}>
+          <stat.icon className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+        </div>
+        <div className="text-right">
+          <p className="text-xl sm:text-2xl font-bold text-gray-900">{stat.value}</p>
+          <p className="text-xs text-gray-600">{stat.change}</p>
+        </div>
+      </div>
+      <div>
+        <p className="text-sm font-semibold text-gray-800 mb-1">{stat.label}</p>
+        <p className="text-xs text-gray-600">{stat.description}</p>
+      </div>
+    </motion.div>
+  ))}
+</div>
 
         {/* Secondary Metrics Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1551,217 +1729,310 @@ const exportLastWeekToPDF = async () => {
           animate="visible"
           className={`${getRoleCardClass()} rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm border`}
         >
-          {/* Enhanced Tabs */}
-       {/* Enhanced Navigation Tabs */}
+{/* Enhanced Navigation Tabs */}
+{/* Enhanced Navigation - Desktop & Mobile Different */}
 <div className={`relative overflow-hidden transition-all duration-700 ${
   isDark 
     ? 'bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-800' 
     : 'bg-gradient-to-br from-white via-blue-50/50 to-emerald-50'
 } border-b ${isDark ? 'border-slate-700/50' : 'border-emerald-100'} shadow-2xl`}>
   
-  {/* Animated gradient orbs */}
-  <div className="absolute inset-0 overflow-hidden">
-    <motion.div
-      className={`absolute -top-20 -left-20 w-40 h-40 rounded-full blur-3xl ${
-        isDark ? 'bg-cyan-500/20' : 'bg-cyan-400/30'
-      }`}
-      animate={{
-        x: [0, 100, 0],
-        y: [0, 50, 0],
-        scale: [1, 1.2, 1],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-    <motion.div
-      className={`absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-3xl ${
-        isDark ? 'bg-purple-500/20' : 'bg-purple-400/30'
-      }`}
-      animate={{
-        x: [0, -100, 0],
-        y: [0, -50, 0],
-        scale: [1, 1.3, 1],
-      }}
-      transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-  </div>
-
-  {/* Floating particles */}
-  <div className="absolute inset-0">
-    {[...Array(8)].map((_, i) => (
+  {/* Desktop Navigation (hidden on mobile) */}
+  <div className="hidden md:block relative">
+    {/* Animated gradient orbs */}
+    <div className="absolute inset-0 overflow-hidden">
       <motion.div
-        key={i}
-        className={`absolute w-1 h-1 rounded-full ${
-          isDark ? 'bg-emerald-400/40' : 'bg-emerald-400/60'
+        className={`absolute -top-20 -left-20 w-40 h-40 rounded-full blur-3xl ${
+          isDark ? 'bg-cyan-500/20' : 'bg-cyan-400/30'
         }`}
-        initial={{
-          x: Math.random() * 100 + '%',
-          y: Math.random() * 100 + '%',
-        }}
         animate={{
-          y: [0, -30, 0],
-          opacity: [0, 1, 0],
+          x: [0, 100, 0],
+          y: [0, 50, 0],
+          scale: [1, 1.2, 1],
         }}
         transition={{
-          duration: 3 + Math.random() * 4,
+          duration: 8,
           repeat: Infinity,
-          delay: Math.random() * 2,
+          ease: "easeInOut"
         }}
       />
-    ))}
+      <motion.div
+        className={`absolute -bottom-20 -right-20 w-40 h-40 rounded-full blur-3xl ${
+          isDark ? 'bg-purple-500/20' : 'bg-purple-400/30'
+        }`}
+        animate={{
+          x: [0, -100, 0],
+          y: [0, -50, 0],
+          scale: [1, 1.3, 1],
+        }}
+        transition={{
+          duration: 10,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+    </div>
+
+    {/* Floating particles */}
+    <div className="absolute inset-0">
+      {[...Array(8)].map((_, i) => (
+        <motion.div
+          key={i}
+          className={`absolute w-1 h-1 rounded-full ${
+            isDark ? 'bg-emerald-400/40' : 'bg-emerald-400/60'
+          }`}
+          initial={{
+            x: Math.random() * 100 + '%',
+            y: Math.random() * 100 + '%',
+          }}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0, 1, 0],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 4,
+            repeat: Infinity,
+            delay: Math.random() * 2,
+          }}
+        />
+      ))}
+    </div>
+
+    <nav className="relative flex p-3 gap-2">
+      {[
+        { key: 'overview', label: 'Dashboard Overview', icon: BarChart3, color: 'emerald' },
+        { key: 'attendance', label: 'Attendance Management', icon: Calendar, color: 'blue' },
+        { key: 'students', label: 'Students', icon: Users, color: 'purple' },
+        { key: 'messages', label: 'Send Messages', icon: Send, color: 'orange' },
+        { key: 'studentMessages', label: 'Student Questions', icon: MessageSquare, color: 'pink' },
+        { key: 'staffComm', label: 'Staff Communication', icon: Mail, color: 'indigo' }
+      ].map((tab, index) => (
+        <motion.div
+          key={tab.key}
+          className="relative flex-1"
+          initial={{ opacity: 0, y: -20, scale: 0.8 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: index * 0.1, type: "spring", stiffness: 100 }}
+          whileHover={{ y: -2 }}
+        >
+          <motion.button
+            variants={{
+              inactive: {
+                scale: 1,
+                background: isDark ? 'rgba(15, 23, 42, 0.4)' : 'rgba(255, 255, 255, 0.6)',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+              },
+              active: {
+                scale: 1.02,
+                background: isDark ? 'rgba(15, 23, 42, 0.8)' : 'rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+              }
+            }}
+            initial="inactive"
+            animate={activeTab === tab.key ? "active" : "inactive"}
+            onClick={() => setActiveTab(tab.key)}
+            className={`flex items-center justify-center px-4 py-4 text-sm font-bold rounded-xl backdrop-blur-xl transition-all duration-500 w-full relative overflow-hidden group ${
+              activeTab === tab.key
+                ? isDark ? 'text-white shadow-2xl' : 'text-gray-900 shadow-2xl'
+                : isDark ? 'text-slate-300' : 'text-gray-600'
+            }`}
+          >
+            <div className={`absolute inset-0 rounded-xl backdrop-blur-xl ${
+              isDark ? 'bg-slate-900/90' : 'bg-white/90'
+            }`} />
+            
+            <div className="relative z-10 flex items-center justify-center space-x-3">
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.2, rotate: [0, -10, 10, 0] }}
+                transition={{ duration: 0.5 }}
+              >
+                <tab.icon className={`h-5 w-5 transition-all duration-500 ${
+                  activeTab === tab.key 
+                    ? `text-${tab.color}-500` 
+                    : isDark ? 'text-white' : 'text-gray-900'
+                }`} />
+                
+                {activeTab === tab.key && (
+                  <motion.div
+                    className={`absolute inset-0 rounded-full blur-md bg-${tab.color}-500/30`}
+                    animate={{ scale: [1, 1.5, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
+                )}
+              </motion.div>
+              
+              <motion.span
+                className="font-semibold tracking-wide whitespace-nowrap"
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 + 0.3 }}
+              >
+                {tab.label}
+              </motion.span>
+            </div>
+
+            {activeTab === tab.key && (
+              <motion.div
+                className="absolute -top-1 -right-1 flex space-x-1"
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                {[0, 1, 2].map((dot) => (
+                  <motion.div
+                    key={dot}
+                    className={`w-1 h-1 rounded-full ${
+                      isDark ? 'bg-emerald-400' : 'bg-emerald-500'
+                    }`}
+                    animate={{ y: [0, -3, 0] }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      delay: dot * 0.2
+                    }}
+                  />
+                ))}
+              </motion.div>
+            )}
+          </motion.button>
+        </motion.div>
+      ))}
+    </nav>
   </div>
 
-  <nav className="relative flex p-3 gap-2">
-    {[
-      { 
-        key: 'overview', 
-        label: 'Dashboard Overview', 
-        icon: BarChart3
-      },
-      { 
-        key: 'attendance', 
-        label: 'Attendance Management', 
-        icon: Calendar
-      },
-      { 
-        key: 'students', 
-        label: 'Students', 
-        icon: Users
-      },
-      { 
-        key: 'messages', 
-        label: 'Send Messages', 
-        icon: Send
-      },
-      {
-        key: 'studentMessages',
-        label: 'Student Questions',
-        icon: MessageSquare
-      },
-      { 
-        key: 'staffComm', 
-        label: 'Staff Communication', 
-        icon: Mail
-      }
-    ].map((tab, index) => (
-      <motion.div
-        key={tab.key}
-        className="relative flex-1"
-        initial={{ opacity: 0, y: -20, scale: 0.8 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ 
-          delay: index * 0.1,
-          type: "spring",
-          stiffness: 100
-        }}
-        whileHover={{ y: -2 }}
-      >
-        <motion.button
-          variants={{
-            inactive: {
-              scale: 1,
-              background: isDark 
-                ? 'rgba(15, 23, 42, 0.4)' 
-                : 'rgba(255, 255, 255, 0.6)',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            },
-            active: {
-              scale: 1.02,
-              background: isDark 
-                ? 'rgba(15, 23, 42, 0.8)' 
-                : 'rgba(255, 255, 255, 0.95)',
-              boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
-            }
-          }}
-          initial="inactive"
-          animate={activeTab === tab.key ? "active" : "inactive"}
-          onClick={() => setActiveTab(tab.key)}
-          className={`flex items-center justify-center px-6 py-5 text-sm font-bold rounded-2xl backdrop-blur-xl transition-all duration-500 w-full relative overflow-hidden group ${
-            activeTab === tab.key
-              ? isDark 
-                ? 'text-white shadow-2xl' 
-                : 'text-gray-900 shadow-2xl'
-              : isDark
-                ? 'text-slate-300'
-                : 'text-gray-600'
+  {/* Mobile Bottom Navigation Bar (visible only on mobile) */}
+  <div className="md:hidden">
+    {/* Mobile Header with Quick Actions */}
+    <div className={`px-4 py-3 flex items-center justify-between ${
+      isDark ? 'bg-slate-800/50' : 'bg-white/50'
+    } backdrop-blur-xl border-b ${isDark ? 'border-slate-700' : 'border-emerald-100'}`}>
+      <div className="flex items-center space-x-2">
+        <motion.div
+          whileTap={{ scale: 0.9 }}
+          className={`p-2 rounded-lg ${
+            isDark ? 'bg-emerald-800/50' : 'bg-emerald-100'
           }`}
+          onClick={() => navigate(`/profile/staff/${user?.id}`)}
         >
-          
-          {/* Main background */}
-          <div className={`absolute inset-0 rounded-2xl backdrop-blur-xl ${
-            isDark ? 'bg-slate-900/90' : 'bg-white/90'
-          }`} />
-          
-          <div className="relative z-10 flex items-center justify-center space-x-3">
-            <motion.div
-              className="relative"
-              whileHover={{ 
-                scale: 1.2,
-                rotate: [0, -10, 10, 0]
-              }}
-              transition={{ duration: 0.5 }}
+          <User className={`h-5 w-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+        </motion.div>
+        <div>
+          <p className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>
+            {new Date().toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+          </p>
+          <p className={`text-sm font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+            {userDepartment?.name?.split(' ')[0] || 'Dashboard'}
+          </p>
+        </div>
+      </div>
+      
+      <div className="flex items-center space-x-2">
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className={`p-2 rounded-lg ${
+            isDark ? 'bg-slate-700' : 'bg-gray-100'
+          }`}
+          onClick={() => {
+            // Quick action - today's attendance
+            setActiveTab('attendance');
+            setSelectedDate(new Date().toISOString().split('T')[0]);
+          }}
+        >
+          <Calendar className={`h-5 w-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+        </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          className={`p-2 rounded-lg ${
+            isDark ? 'bg-slate-700' : 'bg-gray-100'
+          }`}
+          onClick={() => {
+            setActiveTab('messages');
+            setShowMessageForm(true);
+          }}
+        >
+          <Send className={`h-5 w-5 ${isDark ? 'text-blue-400' : 'text-blue-600'}`} />
+        </motion.button>
+      </div>
+    </div>
+
+    {/* Mobile Tab Bar - Horizontal Scrollable */}
+    <div className="relative">
+      {/* Gradient Fade Indicators */}
+      <div className={`absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r ${
+        isDark ? 'from-slate-900 to-transparent' : 'from-white to-transparent'
+      } z-10 pointer-events-none`} />
+      <div className={`absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l ${
+        isDark ? 'from-slate-900 to-transparent' : 'from-white to-transparent'
+      } z-10 pointer-events-none`} />
+
+      {/* Scrollable Tabs */}
+      <div className="overflow-x-auto scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+        <div className="flex p-2 space-x-1 min-w-max">
+          {[
+            { key: 'overview', label: 'Home', icon: BarChart3, color: 'emerald' },
+            { key: 'attendance', label: 'Attendance', icon: Calendar, color: 'blue' },
+            { key: 'students', label: 'Students', icon: Users, color: 'purple' },
+            { key: 'messages', label: 'Send', icon: Send, color: 'orange' },
+            { key: 'studentMessages', label: 'Q&A', icon: MessageSquare, color: 'pink' },
+            { key: 'staffComm', label: 'Staff', icon: Mail, color: 'indigo' }
+          ].map((tab) => (
+            <motion.button
+              key={tab.key}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setActiveTab(tab.key)}
+              className={`relative flex flex-col items-center px-4 py-2 rounded-xl transition-all duration-300 ${
+                activeTab === tab.key
+                  ? isDark
+                    ? `bg-${tab.color}-900/30 text-${tab.color}-400`
+                    : `bg-${tab.color}-100 text-${tab.color}-700`
+                  : isDark
+                    ? 'text-slate-400 hover:bg-slate-800'
+                    : 'text-gray-500 hover:bg-gray-100'
+              }`}
             >
-              <tab.icon className={`h-5 w-5 transition-all duration-500 ${
-                isDark ? 'text-white' : 'text-gray-900'
+              <tab.icon className={`h-5 w-5 mb-1 ${
+                activeTab === tab.key ? `text-${tab.color}-500` : ''
               }`} />
+              <span className="text-xs font-medium">{tab.label}</span>
               
-              {/* Icon glow */}
+              {/* Active Indicator Dot */}
               {activeTab === tab.key && (
                 <motion.div
-                  className={`absolute inset-0 rounded-full blur-md ${
-                    isDark ? 'bg-emerald-400/30' : 'bg-emerald-500/30'
-                  }`}
-                  animate={{ scale: [1, 1.5, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  layoutId="activeTabDot"
+                  className={`absolute -bottom-1 w-1 h-1 rounded-full bg-${tab.color}-500`}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}
-            </motion.div>
-            
-            <motion.span
-              className="font-semibold tracking-wide whitespace-nowrap"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.1 + 0.3 }}
-            >
-              {tab.label}
-            </motion.span>
-          </div>
+            </motion.button>
+          ))}
+        </div>
+      </div>
+    </div>
 
-          {/* Active indicator - floating dots */}
-          {activeTab === tab.key && (
-            <motion.div
-              className="absolute -top-1 -right-1 flex space-x-1"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              {[0, 1, 2].map((dot) => (
-                <motion.div
-                  key={dot}
-                  className={`w-1 h-1 rounded-full ${
-                    isDark ? 'bg-emerald-400' : 'bg-emerald-500'
-                  }`}
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{
-                    duration: 1.5,
-                    repeat: Infinity,
-                    delay: dot * 0.2
-                  }}
-                />
-              ))}
-            </motion.div>
-          )}
-        </motion.button>
-      </motion.div>
-    ))}
-  </nav>
+    {/* Quick Stats Bar */}
+    <div className={`px-4 py-2 flex items-center justify-between text-xs border-t ${
+      isDark ? 'bg-slate-800/30 border-slate-700' : 'bg-gray-50/50 border-gray-200'
+    }`}>
+      <div className="flex items-center space-x-3">
+        <div className="flex items-center">
+          <div className="w-2 h-2 rounded-full bg-green-500 mr-1"></div>
+          <span className={isDark ? 'text-slate-400' : 'text-gray-600'}>
+            {stats.presentToday} Present
+          </span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-2 h-2 rounded-full bg-red-500 mr-1"></div>
+          <span className={isDark ? 'text-slate-400' : 'text-gray-600'}>
+            {stats.absentToday} Absent
+          </span>
+        </div>
+      </div>
+      <div className={`font-medium ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>
+        {stats.averageAttendance}% avg
+      </div>
+    </div>
+  </div>
 </div>
 
           <div className="p-6">
@@ -1785,7 +2056,7 @@ const exportLastWeekToPDF = async () => {
       y: -5,
       transition: { type: "spring", stiffness: 300, damping: 25 }
     }}
-    className={`rounded-3xl shadow-2xl p-8 border-2 backdrop-blur-xl relative overflow-hidden ${
+    className={`rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 border-2 backdrop-blur-xl relative overflow-hidden ${
       isDark 
         ? 'bg-gradient-to-br from-slate-800/80 via-slate-800/60 to-slate-900/80 border-slate-700/50' 
         : 'bg-gradient-to-br from-white via-blue-50/90 to-indigo-50/90 border-blue-200/60'
@@ -1833,43 +2104,48 @@ const exportLastWeekToPDF = async () => {
     />
 
     <div className="relative">
-      {/* Enhanced Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div className="flex items-center">
+      {/* Enhanced Header - Responsive */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 sm:mb-8">
+        <div className="flex items-center w-full sm:w-auto">
           <motion.div
             whileHover={{ 
               scale: 1.15,
               rotate: [0, -5, 5, 0],
               transition: { duration: 0.5 }
             }}
-            className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 shadow-2xl mr-5 relative overflow-hidden"
+            className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-600 shadow-xl sm:shadow-2xl mr-3 sm:mr-5 relative overflow-hidden flex-shrink-0"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent" />
-            <Building2 className="h-8 w-8 text-white relative z-10" />
+            <Building2 className="h-6 w-6 sm:h-8 sm:w-8 text-white relative z-10" />
           </motion.div>
-          <div>
+          <div className="min-w-0 flex-1">
             <motion.h3
               whileHover={{ x: 3 }}
-              className={`text-3xl font-bold bg-gradient-to-r ${
+              className={`text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r ${
                 isDark 
                   ? 'from-emerald-300 to-cyan-300' 
                   : 'from-emerald-700 to-cyan-700'
-              } bg-clip-text text-transparent`}
+              } bg-clip-text text-transparent truncate`}
             >
               {userDepartment.name}
             </motion.h3>
             <motion.p
               whileHover={{ x: 3 }}
-              className={`text-sm font-medium flex items-center space-x-2 mt-2 ${
+              className={`text-xs sm:text-sm font-medium flex flex-wrap items-center gap-1 sm:gap-2 mt-1 sm:mt-2 ${
                 isDark ? 'text-slate-400' : 'text-gray-600'
               }`}
             >
-              <span>🏢 Your Department</span>
-              <span className="w-1 h-1 bg-current rounded-full opacity-60"></span>
+              <span className="flex items-center">
+                <span className="mr-1">🏢</span>
+                <span className="truncate">Your Department</span>
+              </span>
+              <span className="w-1 h-1 bg-current rounded-full opacity-60 hidden xs:inline"></span>
               <span>{userDepartment.staffCount || 0} Staff Members</span>
             </motion.p>
           </div>
         </div>
+        
+        {/* View Profile Button - Full width on mobile */}
         <motion.button
           whileHover={{ 
             scale: 1.08,
@@ -1878,22 +2154,22 @@ const exportLastWeekToPDF = async () => {
           }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate(`/profile/staff/${user?.id}`)}
-          className={`px-7 py-3.5 text-sm font-semibold rounded-2xl transition-all backdrop-blur-xl border-2 relative overflow-hidden group ${
+          className={`w-full sm:w-auto px-5 sm:px-7 py-2.5 sm:py-3.5 text-xs sm:text-sm font-semibold rounded-xl sm:rounded-2xl transition-all backdrop-blur-xl border-2 relative overflow-hidden group ${
             isDark 
               ? 'bg-gradient-to-r from-emerald-700/90 to-cyan-700/90 text-emerald-100 border-emerald-500/40 hover:from-emerald-600/90 hover:to-cyan-600/90' 
               : 'bg-gradient-to-r from-emerald-500 to-cyan-600 text-white border-emerald-400/60 hover:from-emerald-600 hover:to-cyan-700'
           }`}
         >
           <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-          <span className="flex items-center space-x-2 relative z-10">
+          <span className="flex items-center justify-center space-x-2 relative z-10">
             <User className="h-4 w-4" />
             <span>View Profile</span>
           </span>
         </motion.button>
       </div>
       
-      {/* Enhanced Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* Enhanced Content Grid - Responsive */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         {/* Description Section */}
         <motion.div
           whileHover={{ scale: 1.03 }}
@@ -1902,25 +2178,25 @@ const exportLastWeekToPDF = async () => {
           {userDepartment.description && (
             <motion.div
               whileHover={{ x: 4 }}
-              className={`p-5 rounded-2xl backdrop-blur-xl border-2 ${
+              className={`p-4 sm:p-5 rounded-xl sm:rounded-2xl backdrop-blur-xl border-2 ${
                 isDark 
                   ? 'bg-slate-700/60 border-slate-600/50 hover:border-emerald-500/30' 
                   : 'bg-white/70 border-blue-200/60 hover:border-emerald-400/60'
               } transition-all duration-300`}
             >
-              <div className="flex items-center space-x-3 mb-3">
-                <div className={`p-2 rounded-xl ${
+              <div className="flex items-center space-x-2 sm:space-x-3 mb-2 sm:mb-3">
+                <div className={`p-1.5 sm:p-2 rounded-lg sm:rounded-xl ${
                   isDark ? 'bg-emerald-500/20' : 'bg-emerald-100'
                 }`}>
-                  <BookOpen className={`h-4 w-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                  <BookOpen className={`h-3 w-3 sm:h-4 sm:w-4 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
                 </div>
-                <p className={`text-sm font-semibold ${
+                <p className={`text-xs sm:text-sm font-semibold ${
                   isDark ? 'text-slate-300' : 'text-gray-700'
                 }`}>
                   Department Description
                 </p>
               </div>
-              <p className={`text-sm leading-relaxed ${
+              <p className={`text-xs sm:text-sm leading-relaxed line-clamp-3 sm:line-clamp-none ${
                 isDark ? 'text-slate-400' : 'text-gray-600'
               }`}>
                 {userDepartment.description}
@@ -1930,7 +2206,7 @@ const exportLastWeekToPDF = async () => {
         </motion.div>
         
         {/* Stats Section */}
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Classes Managed */}
           <motion.div
             whileHover={{ 
@@ -1938,10 +2214,10 @@ const exportLastWeekToPDF = async () => {
               y: -4,
               transition: { type: "spring", stiffness: 400 }
             }}
-            className="relative p-6 rounded-2xl bg-gradient-to-br from-emerald-500/15 via-teal-500/12 to-emerald-600/10 border-2 border-emerald-300/30 dark:border-emerald-500/20 backdrop-blur-xl overflow-hidden group"
+            className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-emerald-500/15 via-teal-500/12 to-emerald-600/10 border-2 border-emerald-300/30 dark:border-emerald-500/20 backdrop-blur-xl overflow-hidden group"
           >
-            <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-400/10 rounded-full transform translate-x-10 -translate-y-10" />
-            <div className="absolute bottom-0 left-0 w-16 h-16 bg-teal-400/10 rounded-full transform -translate-x-8 translate-y-8" />
+            <div className="absolute top-0 right-0 w-16 sm:w-20 h-16 sm:h-20 bg-emerald-400/10 rounded-full transform translate-x-8 sm:translate-x-10 -translate-y-8 sm:-translate-y-10" />
+            <div className="absolute bottom-0 left-0 w-12 sm:w-16 h-12 sm:h-16 bg-teal-400/10 rounded-full transform -translate-x-6 sm:-translate-x-8 translate-y-6 sm:translate-y-8" />
             
             <div className="relative z-10 text-center">
               <motion.div
@@ -1953,17 +2229,17 @@ const exportLastWeekToPDF = async () => {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className={`text-5xl font-bold mb-3 bg-gradient-to-r ${
+                className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 bg-gradient-to-r ${
                   isDark ? 'from-emerald-300 to-teal-300' : 'from-emerald-600 to-teal-600'
                 } bg-clip-text text-transparent`}
               >
                 {classes.length}
               </motion.div>
-              <div className="flex items-center justify-center space-x-2">
-                <BookOpen className={`h-5 w-5 ${
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <BookOpen className={`h-4 sm:h-5 w-4 sm:w-5 ${
                   isDark ? 'text-emerald-400' : 'text-emerald-500'
                 }`} />
-                <p className={`text-sm font-semibold ${
+                <p className={`text-xs sm:text-sm font-semibold ${
                   isDark ? 'text-slate-300' : 'text-gray-700'
                 }`}>
                   Classes Managed
@@ -1979,10 +2255,10 @@ const exportLastWeekToPDF = async () => {
               y: -4,
               transition: { type: "spring", stiffness: 400, delay: 0.1 }
             }}
-            className="relative p-6 rounded-2xl bg-gradient-to-br from-cyan-500/15 via-blue-500/12 to-indigo-600/10 border-2 border-cyan-300/30 dark:border-cyan-500/20 backdrop-blur-xl overflow-hidden group"
+            className="relative p-4 sm:p-6 rounded-xl sm:rounded-2xl bg-gradient-to-br from-cyan-500/15 via-blue-500/12 to-indigo-600/10 border-2 border-cyan-300/30 dark:border-cyan-500/20 backdrop-blur-xl overflow-hidden group"
           >
-            <div className="absolute top-0 left-0 w-20 h-20 bg-cyan-400/10 rounded-full transform -translate-x-10 -translate-y-10" />
-            <div className="absolute bottom-0 right-0 w-16 h-16 bg-blue-400/10 rounded-full transform translate-x-8 translate-y-8" />
+            <div className="absolute top-0 left-0 w-16 sm:w-20 h-16 sm:h-20 bg-cyan-400/10 rounded-full transform -translate-x-8 sm:-translate-x-10 -translate-y-8 sm:-translate-y-10" />
+            <div className="absolute bottom-0 right-0 w-12 sm:w-16 h-12 sm:h-16 bg-blue-400/10 rounded-full transform translate-x-6 sm:translate-x-8 translate-y-6 sm:translate-y-8" />
             
             <div className="relative z-10 text-center">
               <motion.div
@@ -1995,17 +2271,17 @@ const exportLastWeekToPDF = async () => {
                   ease: "easeInOut",
                   delay: 0.5
                 }}
-                className={`text-5xl font-bold mb-3 bg-gradient-to-r ${
+                className={`text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-3 bg-gradient-to-r ${
                   isDark ? 'from-cyan-300 to-blue-300' : 'from-cyan-600 to-blue-600'
                 } bg-clip-text text-transparent`}
               >
                 {classes.reduce((total, cls) => total + (cls.studentCount || 0), 0)}
               </motion.div>
-              <div className="flex items-center justify-center space-x-2">
-                <Users className={`h-5 w-5 ${
+              <div className="flex items-center justify-center space-x-1 sm:space-x-2">
+                <Users className={`h-4 sm:h-5 w-4 sm:w-5 ${
                   isDark ? 'text-cyan-400' : 'text-cyan-500'
                 }`} />
-                <p className={`text-sm font-semibold ${
+                <p className={`text-xs sm:text-sm font-semibold ${
                   isDark ? 'text-slate-300' : 'text-gray-700'
                 }`}>
                   Total Students
@@ -2022,29 +2298,29 @@ const exportLastWeekToPDF = async () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="mt-8 pt-6 border-t border-gray-300/50 dark:border-slate-600/50"
+          className="mt-6 sm:mt-8 pt-4 sm:pt-6 border-t border-gray-300/50 dark:border-slate-600/50"
         >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-center space-x-3 sm:space-x-4 w-full sm:w-auto">
               <motion.div
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                className={`p-3 rounded-2xl ${
+                className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl flex-shrink-0 ${
                   isDark 
                     ? 'bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30' 
                     : 'bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200'
                 }`}
               >
-                <Crown className={`h-6 w-6 ${
+                <Award className={`h-5 sm:h-6 w-5 sm:w-6 ${
                   isDark ? 'text-purple-400' : 'text-purple-600'
                 }`} />
               </motion.div>
-              <div>
-                <p className={`text-sm font-medium ${
+              <div className="min-w-0 flex-1">
+                <p className={`text-xs sm:text-sm font-medium ${
                   isDark ? 'text-slate-400' : 'text-gray-600'
                 }`}>
                   Department Head
                 </p>
-                <p className={`font-bold text-lg ${
+                <p className={`font-bold text-base sm:text-lg truncate ${
                   isDark ? 'text-slate-300' : 'text-gray-800'
                 }`}>
                   {userDepartment.head.name}
@@ -2053,16 +2329,14 @@ const exportLastWeekToPDF = async () => {
             </div>
             <motion.div
               whileHover={{ scale: 1.05 }}
-              className={`px-5 py-3 rounded-xl text-sm font-medium backdrop-blur-xl border-2 ${
+              className={`w-full sm:w-auto px-4 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-medium backdrop-blur-xl border-2 flex items-center justify-center sm:justify-start ${
                 isDark 
                   ? 'bg-purple-900/30 text-purple-300 border-purple-500/30 hover:bg-purple-800/30' 
                   : 'bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200'
               } transition-all duration-300`}
             >
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
-                <span>{userDepartment.head.email}</span>
-              </div>
+              <Mail className="h-3 sm:h-4 w-3 sm:w-4 mr-2 flex-shrink-0" />
+              <span className="truncate">{userDepartment.head.email}</span>
             </motion.div>
           </div>
         </motion.div>
@@ -2985,401 +3259,409 @@ const exportLastWeekToPDF = async () => {
     {/* Enhanced Message Form */}
     <AnimatePresence>
       {showMessageForm && (
+  <motion.div
+    initial={{ opacity: 0, scale: 0.95, y: -20 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+    className={`rounded-2xl p-4 sm:p-6 border-2 shadow-2xl backdrop-blur-sm transition-all duration-300 ${
+      isDark 
+        ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-600' 
+        : 'bg-gradient-to-br from-white to-emerald-50 border-emerald-200'
+    }`}
+  >
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+      <h3 className={`text-lg sm:text-xl font-semibold transition-colors duration-300 ${
+        isDark ? 'text-white' : 'text-gray-900'
+      }`}>
+        {messageType === 'announcement' ? '📢 Send Announcement' :
+         messageType === 'class' ? '👥 Send Class Message' :
+         messageType === 'group' ? '👨‍👩‍👧‍👦 Send Group Message' :
+         '💬 Send Individual Message'}
+      </h3>
+      <motion.button
+        whileHover={{ scale: 1.2, rotate: 90 }}
+        whileTap={{ scale: 0.9 }}
+        onClick={() => setShowMessageForm(false)}
+        className={`self-end sm:self-center p-2 rounded-lg transition-colors duration-300 ${
+          isDark 
+            ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' 
+            : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
+        }`}
+      >
+        <XCircle className="h-5 w-5" />
+      </motion.button>
+    </div>
+    
+    {/* Message Type Selection */}
+    <div className="mb-6">
+      <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
+        isDark ? 'text-slate-300' : 'text-gray-700'
+      }`}>
+        Message Type
+      </label>
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        {[
+          { key: 'individual', label: 'Individual', icon: User, color: 'blue' },
+          { key: 'group', label: 'Group', icon: Users, color: 'purple' },
+          { key: 'class', label: 'Class', icon: BookOpen, color: 'green' },
+          { key: 'announcement', label: 'Announcement', icon: Bell, color: 'orange' }
+        ].map((type) => (
+          <motion.button
+            key={type.key}
+            type="button"
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => {
+              setMessageType(type.key as 'individual' | 'group' | 'class' | 'announcement');
+              setMessageForm({ 
+                studentId: '', 
+                studentIds: [], 
+                classId: '', 
+                content: '', 
+                file: null 
+              });
+            }}
+            className={`flex flex-col items-center p-3 sm:p-4 rounded-xl border-2 transition-all duration-300 ${
+              messageType === type.key
+                ? isDark
+                  ? `border-${type.color}-500 bg-${type.color}-900/30 text-${type.color}-300 shadow-lg`
+                  : `border-${type.color}-500 bg-${type.color}-100 text-${type.color}-700 shadow-md`
+                : isDark
+                  ? 'border-slate-600 bg-slate-800/50 text-slate-400 hover:border-slate-500 hover:text-slate-200'
+                  : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-800'
+            }`}
+          >
+            <type.icon className={`h-5 w-5 sm:h-6 sm:w-6 mb-1 sm:mb-2 ${
+              messageType === type.key ? `text-${type.color}-500` : ''
+            }`} />
+            <span className="text-xs sm:text-sm font-medium">{type.label}</span>
+          </motion.button>
+        ))}
+      </div>
+    </div>
+    
+    <form onSubmit={sendMessage} className="space-y-6">
+      {/* Individual Student Selection */}
+      {messageType === 'individual' && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.95, y: -20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.95, y: -20 }}
-          className={`rounded-2xl p-6 border-2 shadow-2xl backdrop-blur-sm transition-all duration-300 ${
-            isDark 
-              ? 'bg-gradient-to-br from-slate-800 to-slate-900 border-slate-600' 
-              : 'bg-gradient-to-br from-white to-emerald-50 border-emerald-200'
-          }`}
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-3"
         >
-          <div className="flex justify-between items-center mb-6">
-            <h3 className={`text-xl font-semibold transition-colors duration-300 ${
-              isDark ? 'text-white' : 'text-gray-900'
+          <ModernDropdown
+            label="Select Student"
+            required
+            value={messageForm.studentId}
+            onChange={(value) => setMessageForm({ ...messageForm, studentId: value })}
+            options={[
+              { value: '', label: 'Choose a student...', disabled: true },
+              ...students.map((student) => ({
+                value: student.id.toString(),
+                label: student.name,
+                description: `${student.rollNumber} - ${student.class?.name || 'No Class'}`,
+                icon: <User className="h-4 w-4" />
+              }))
+            ]}
+            placeholder="Choose a student..."
+            searchable
+            clearable
+          />
+        </motion.div>
+      )}
+      
+      {/* Class Selection */}
+      {messageType === 'class' && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-3"
+        >
+          <ModernDropdown
+            label="Select Class"
+            required
+            value={messageForm.classId}
+            onChange={(value) => setMessageForm({ ...messageForm, classId: value })}
+            options={[
+              { value: '', label: 'Choose a class...', disabled: true },
+              ...classes.map((classInfo) => ({
+                value: classInfo.id.toString(),
+                label: classInfo.name,
+                description: `${classInfo.studentCount} students`,
+                icon: <BookOpen className="h-4 w-4" />
+              }))
+            ]}
+            placeholder="Choose a class..."
+            searchable
+            clearable
+          />
+          {messageForm.classId && (
+            <div className={`text-sm p-3 rounded-lg border transition-colors duration-300 ${
+              isDark 
+                ? 'bg-emerald-900/30 text-emerald-300 border-emerald-700' 
+                : 'bg-emerald-50 text-emerald-700 border-emerald-200'
             }`}>
-              {messageType === 'announcement' ? '📢 Send Announcement' :
-               messageType === 'class' ? '👥 Send Class Message' :
-               messageType === 'group' ? '👨‍👩‍👧‍👦 Send Group Message' :
-               '💬 Send Individual Message'}
-            </h3>
-            <motion.button
-              whileHover={{ scale: 1.2, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setShowMessageForm(false)}
-              className={`p-2 rounded-lg transition-colors duration-300 ${
-                isDark 
-                  ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' 
-                  : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'
-              }`}
-            >
-              <XCircle className="h-5 w-5" />
-            </motion.button>
-          </div>
-          
-          {/* Message Type Selection */}
-          <div className="mb-6">
-            <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
-              isDark ? 'text-slate-300' : 'text-gray-700'
-            }`}>
-              Message Type
-            </label>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-              {[
-                { key: 'individual', label: 'Individual', icon: User, color: 'blue' },
-                { key: 'group', label: 'Group', icon: Users, color: 'purple' },
-                { key: 'class', label: 'Class', icon: BookOpen, color: 'green' },
-                { key: 'announcement', label: 'Announcement', icon: Bell, color: 'orange' }
-              ].map((type) => (
-                <motion.button
-                  key={type.key}
-                  type="button"
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setMessageType(type.key as 'individual' | 'group' | 'class' | 'announcement');
-                    setMessageForm({ 
-                      studentId: '', 
-                      studentIds: [], 
-                      classId: '', 
-                      content: '', 
-                      file: null 
-                    });
-                  }}
-                  className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-300 ${
-                    messageType === type.key
-                      ? isDark
-                        ? `border-${type.color}-500 bg-${type.color}-900/30 text-${type.color}-300 shadow-lg`
-                        : `border-${type.color}-500 bg-${type.color}-100 text-${type.color}-700 shadow-md`
-                      : isDark
-                        ? 'border-slate-600 bg-slate-800/50 text-slate-400 hover:border-slate-500 hover:text-slate-200'
-                        : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:text-gray-800'
-                  }`}
-                >
-                  <type.icon className={`h-6 w-6 mb-2 ${
-                    messageType === type.key ? `text-${type.color}-500` : ''
-                  }`} />
-                  <span className="text-sm font-medium">{type.label}</span>
-                </motion.button>
+              <CheckCircle className="h-4 w-4 inline mr-2 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">
+                Message will be sent to all {classes.find(c => c.id === Number(messageForm.classId))?.studentCount || 0} students in this class
+              </span>
+            </div>
+          )}
+        </motion.div>
+      )}
+      
+      {/* Group Student Selection */}
+      {messageType === 'group' && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="space-y-3"
+        >
+          <label className={`block text-sm font-medium transition-colors duration-300 ${
+            isDark ? 'text-slate-300' : 'text-gray-700'
+          }`}>
+            Select Students ({messageForm.studentIds.length} selected)
+          </label>
+          <div className={`max-h-48 sm:max-h-64 overflow-y-auto border-2 rounded-xl p-3 sm:p-4 space-y-2 transition-colors duration-300 ${
+            isDark 
+              ? 'bg-slate-800 border-slate-600' 
+              : 'bg-white border-emerald-200'
+          }`}>
+            <div className="flex items-center p-2 rounded-lg bg-opacity-50">
+              <input
+                type="checkbox"
+                id="select-all"
+                checked={messageForm.studentIds.length === students.length && students.length > 0}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setMessageForm({ ...messageForm, studentIds: students.map(s => s.id) });
+                  } else {
+                    setMessageForm({ ...messageForm, studentIds: [] });
+                  }
+                }}
+                className={`rounded border-2 focus:ring-2 focus:ring-emerald-500 mr-3 flex-shrink-0 ${
+                  isDark 
+                    ? 'bg-slate-700 border-slate-500 text-emerald-500' 
+                    : 'bg-white border-gray-300 text-emerald-600'
+                }`}
+              />
+              <label htmlFor="select-all" className={`text-xs sm:text-sm font-medium truncate transition-colors duration-300 ${
+                isDark ? 'text-slate-300' : 'text-gray-700'
+              }`}>
+                Select All Students ({students.length})
+              </label>
+            </div>
+            <div className="border-t pt-2 mt-2 space-y-2">
+              {students.map((student) => (
+                <div key={student.id} className="flex items-center p-2 rounded-lg hover:bg-opacity-50 transition-colors duration-200">
+                  <input
+                    type="checkbox"
+                    id={`student-${student.id}`}
+                    checked={messageForm.studentIds.includes(student.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setMessageForm({ 
+                          ...messageForm, 
+                          studentIds: [...messageForm.studentIds, student.id] 
+                        });
+                      } else {
+                        setMessageForm({ 
+                          ...messageForm, 
+                          studentIds: messageForm.studentIds.filter(id => id !== student.id) 
+                        });
+                      }
+                    }}
+                    className={`rounded border-2 focus:ring-2 focus:ring-emerald-500 mr-3 flex-shrink-0 ${
+                      isDark 
+                        ? 'bg-slate-700 border-slate-500 text-emerald-500' 
+                        : 'bg-white border-gray-300 text-emerald-600'
+                    }`}
+                  />
+                  <label htmlFor={`student-${student.id}`} className={`text-xs sm:text-sm flex-1 transition-colors duration-300 ${
+                    isDark ? 'text-slate-300' : 'text-gray-700'
+                  }`}>
+                    <span className="font-medium block sm:inline">{student.name}</span>
+                    <span className={`ml-0 sm:ml-2 text-xs block sm:inline transition-colors duration-300 ${
+                      isDark ? 'text-slate-400' : 'text-gray-500'
+                    }`}>
+                      ({student.rollNumber}) - {student.class?.name || 'No Class'}
+                    </span>
+                  </label>
+                </div>
               ))}
             </div>
           </div>
-          
-          <form onSubmit={sendMessage} className="space-y-6">
-            {/* Individual Student Selection */}
-            {messageType === 'individual' && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3"
-              >
-                <ModernDropdown
-                  label="Select Student"
-                  required
-                  value={messageForm.studentId}
-                  onChange={(value) => setMessageForm({ ...messageForm, studentId: value })}
-                  options={[
-                    { value: '', label: 'Choose a student...', disabled: true },
-                    ...students.map((student) => ({
-                      value: student.id.toString(),
-                      label: student.name,
-                      description: `${student.rollNumber} - ${student.class?.name || 'No Class'}`,
-                      icon: <User className="h-4 w-4" />
-                    }))
-                  ]}
-                  placeholder="Choose a student..."
-                  searchable
-                  clearable
-                />
-              </motion.div>
-            )}
-            
-            {/* Class Selection */}
-            {messageType === 'class' && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3"
-              >
-                <ModernDropdown
-                  label="Select Class"
-                  required
-                  value={messageForm.classId}
-                  onChange={(value) => setMessageForm({ ...messageForm, classId: value })}
-                  options={[
-                    { value: '', label: 'Choose a class...', disabled: true },
-                    ...classes.map((classInfo) => ({
-                      value: classInfo.id.toString(),
-                      label: classInfo.name,
-                      description: `${classInfo.studentCount} students`,
-                      icon: <BookOpen className="h-4 w-4" />
-                    }))
-                  ]}
-                  placeholder="Choose a class..."
-                  searchable
-                  clearable
-                />
-                {messageForm.classId && (
-                  <div className={`text-sm p-3 rounded-lg border transition-colors duration-300 ${
-                    isDark 
-                      ? 'bg-emerald-900/30 text-emerald-300 border-emerald-700' 
-                      : 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                  }`}>
-                    <CheckCircle className="h-4 w-4 inline mr-2" />
-                    Message will be sent to all {classes.find(c => c.id === Number(messageForm.classId))?.studentCount || 0} students in this class
-                  </div>
-                )}
-              </motion.div>
-            )}
-            
-            {/* Group Student Selection */}
-            {messageType === 'group' && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="space-y-3"
-              >
-                <label className={`block text-sm font-medium transition-colors duration-300 ${
-                  isDark ? 'text-slate-300' : 'text-gray-700'
-                }`}>
-                  Select Students ({messageForm.studentIds.length} selected)
-                </label>
-                <div className={`max-h-48 overflow-y-auto border-2 rounded-xl p-4 space-y-2 transition-colors duration-300 ${
-                  isDark 
-                    ? 'bg-slate-800 border-slate-600' 
-                    : 'bg-white border-emerald-200'
-                }`}>
-                  <div className="flex items-center p-2 rounded-lg bg-opacity-50">
-                    <input
-                      type="checkbox"
-                      id="select-all"
-                      checked={messageForm.studentIds.length === students.length && students.length > 0}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setMessageForm({ ...messageForm, studentIds: students.map(s => s.id) });
-                        } else {
-                          setMessageForm({ ...messageForm, studentIds: [] });
-                        }
-                      }}
-                      className={`rounded border-2 focus:ring-2 focus:ring-emerald-500 mr-3 ${
-                        isDark 
-                          ? 'bg-slate-700 border-slate-500 text-emerald-500' 
-                          : 'bg-white border-gray-300 text-emerald-600'
-                      }`}
-                    />
-                    <label htmlFor="select-all" className={`text-sm font-medium transition-colors duration-300 ${
-                      isDark ? 'text-slate-300' : 'text-gray-700'
-                    }`}>
-                      Select All Students ({students.length})
-                    </label>
-                  </div>
-                  <div className="border-t pt-2 mt-2 space-y-2">
-                    {students.map((student) => (
-                      <div key={student.id} className="flex items-center p-2 rounded-lg hover:bg-opacity-50 transition-colors duration-200">
-                        <input
-                          type="checkbox"
-                          id={`student-${student.id}`}
-                          checked={messageForm.studentIds.includes(student.id)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              setMessageForm({ 
-                                ...messageForm, 
-                                studentIds: [...messageForm.studentIds, student.id] 
-                              });
-                            } else {
-                              setMessageForm({ 
-                                ...messageForm, 
-                                studentIds: messageForm.studentIds.filter(id => id !== student.id) 
-                              });
-                            }
-                          }}
-                          className={`rounded border-2 focus:ring-2 focus:ring-emerald-500 mr-3 ${
-                            isDark 
-                              ? 'bg-slate-700 border-slate-500 text-emerald-500' 
-                              : 'bg-white border-gray-300 text-emerald-600'
-                          }`}
-                        />
-                        <label htmlFor={`student-${student.id}`} className={`text-sm flex-1 transition-colors duration-300 ${
-                          isDark ? 'text-slate-300' : 'text-gray-700'
-                        }`}>
-                          <span className="font-medium">{student.name}</span>
-                          <span className={`ml-2 transition-colors duration-300 ${
-                            isDark ? 'text-slate-400' : 'text-gray-500'
-                          }`}>
-                            ({student.rollNumber}) - {student.class?.name || 'No Class'}
-                          </span>
-                        </label>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {messageForm.studentIds.length > 0 && (
-                  <div className={`text-sm p-3 rounded-lg border transition-colors duration-300 ${
-                    isDark 
-                      ? 'bg-purple-900/30 text-purple-300 border-purple-700' 
-                      : 'bg-purple-50 text-purple-700 border-purple-200'
-                  }`}>
-                    <Users className="h-4 w-4 inline mr-2" />
-                    Message will be sent to {messageForm.studentIds.length} selected student{messageForm.studentIds.length !== 1 ? 's' : ''}
-                  </div>
-                )}
-              </motion.div>
-            )}
-            
-            {/* Announcement Info */}
-            {messageType === 'announcement' && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className={`p-4 rounded-xl border-2 transition-colors duration-300 ${
-                  isDark 
-                    ? 'bg-orange-900/20 text-orange-300 border-orange-700' 
-                    : 'bg-orange-50 text-orange-700 border-orange-200'
-                }`}
-              >
-                <div className="flex items-center">
-                  <Bell className="h-5 w-5 mr-3" />
-                  <div>
-                    <p className="font-medium">Announcement to All Students</p>
-                    <p className="text-sm opacity-90 mt-1">
-                      This announcement will be sent to all {stats.totalStudents} students across all classes
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Message Content */}
-            <div>
-              <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
-                isDark ? 'text-slate-300' : 'text-gray-700'
-              }`}>
-                Message Content
-              </label>
-              <textarea
-                required
-                rows={5}
-                value={messageForm.content}
-                onChange={(e) => setMessageForm({ ...messageForm, content: e.target.value })}
-                placeholder="Type your message here... You can include important announcements, reminders, or individual feedback."
-                className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300 resize-none ${
-                  isDark
-                    ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-400 focus:border-emerald-500'
-                    : 'bg-white border-emerald-200 text-gray-900 placeholder-gray-500 focus:border-emerald-500'
-                }`}
-              />
-              <div className={`text-xs mt-2 transition-colors duration-300 ${
-                isDark ? 'text-slate-400' : 'text-gray-500'
-              }`}>
-                {messageForm.content.length}/1000 characters
-              </div>
+          {messageForm.studentIds.length > 0 && (
+            <div className={`text-sm p-3 rounded-lg border transition-colors duration-300 ${
+              isDark 
+                ? 'bg-purple-900/30 text-purple-300 border-purple-700' 
+                : 'bg-purple-50 text-purple-700 border-purple-200'
+            }`}>
+              <Users className="h-4 w-4 inline mr-2 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">
+                Message will be sent to {messageForm.studentIds.length} selected student{messageForm.studentIds.length !== 1 ? 's' : ''}
+              </span>
             </div>
-
-            {/* File Attachment */}
-            <div>
-              <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
-                isDark ? 'text-slate-300' : 'text-gray-700'
-              }`}>
-                Attach File (optional)
-              </label>
-              <div className="flex items-center gap-4">
-                <motion.label
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`flex items-center px-6 py-3 rounded-xl cursor-pointer border-2 border-dashed transition-all duration-300 font-medium ${
-                    isDark
-                      ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-emerald-500'
-                      : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-emerald-400'
-                  }`}
-                >
-                  <Upload className="h-5 w-5 mr-2" />
-                  Choose File
-                  <input
-                    type="file"
-                    onChange={(e) => setMessageForm({ ...messageForm, file: e.target.files?.[0] || null })}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls,.ppt,.pptx"
-                    className="hidden"
-                  />
-                </motion.label>
-                {messageForm.file && (
-                  <div className="flex items-center gap-2">
-                    <FileText className={`h-5 w-5 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
-                    <span className={`text-sm font-medium transition-colors duration-300 ${
-                      isDark ? 'text-slate-300' : 'text-gray-700'
-                    }`}>{messageForm.file.name}</span>
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      type="button"
-                      onClick={() => setMessageForm({ ...messageForm, file: null })}
-                      className={`p-1 rounded-lg transition-colors duration-300 ${
-                        isDark 
-                          ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' 
-                          : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      <XCircle className="h-4 w-4" />
-                    </motion.button>
-                  </div>
-                )}
-              </div>
-              <p className={`text-xs mt-2 transition-colors duration-300 ${
-                isDark ? 'text-slate-400' : 'text-gray-500'
-              }`}>
-                Supported formats: PDF, DOC, DOCX, Images (JPG, PNG, GIF), TXT, Excel, PowerPoint (Max: 10MB)
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-4 pt-4">
-              <motion.button
-                type="submit"
-                disabled={loading}
-                whileHover={{ scale: loading ? 1 : 1.05 }}
-                whileTap={{ scale: loading ? 1 : 0.95 }}
-                className="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-all duration-300 shadow-lg font-medium"
-              >
-                {loading ? (
-                  <>
-                    <motion.div
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                      className="rounded-full h-5 w-5 border-b-2 border-white mr-3"
-                    />
-                    Sending Message...
-                  </>
-                ) : (
-                  <>
-                    <Send className="h-5 w-5 mr-2" />
-                    {messageType === 'announcement' ? 'Send Announcement' :
-                     messageType === 'class' ? `Send to Class` :
-                     messageType === 'group' ? `Send to ${messageForm.studentIds.length} Student${messageForm.studentIds.length !== 1 ? 's' : ''}` :
-                     'Send Message'}
-                  </>
-                )}
-              </motion.button>
-              <motion.button
-                type="button"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowMessageForm(false)}
-                className={`px-6 py-3 rounded-xl border-2 font-medium transition-all duration-300 ${
-                  isDark
-                    ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-slate-500'
-                    : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
-                }`}
-              >
-                Cancel
-              </motion.button>
-            </div>
-          </form>
+          )}
         </motion.div>
       )}
+      
+      {/* Announcement Info */}
+      {messageType === 'announcement' && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className={`p-4 rounded-xl border-2 transition-colors duration-300 ${
+            isDark 
+              ? 'bg-orange-900/20 text-orange-300 border-orange-700' 
+              : 'bg-orange-50 text-orange-700 border-orange-200'
+          }`}
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center">
+            <Bell className="h-5 w-5 mr-3 mb-2 sm:mb-0 flex-shrink-0" />
+            <div>
+              <p className="font-medium text-sm sm:text-base">Announcement to All Students</p>
+              <p className="text-xs sm:text-sm opacity-90 mt-1">
+                This announcement will be sent to all {stats.totalStudents} students across all classes
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Message Content */}
+      <div>
+        <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
+          isDark ? 'text-slate-300' : 'text-gray-700'
+        }`}>
+          Message Content
+        </label>
+        <textarea
+          required
+          rows={5}
+          value={messageForm.content}
+          onChange={(e) => setMessageForm({ ...messageForm, content: e.target.value })}
+          placeholder="Type your message here... You can include important announcements, reminders, or individual feedback."
+          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300 resize-none text-sm sm:text-base ${
+            isDark
+              ? 'bg-slate-800 border-slate-600 text-white placeholder-slate-400 focus:border-emerald-500'
+              : 'bg-white border-emerald-200 text-gray-900 placeholder-gray-500 focus:border-emerald-500'
+          }`}
+        />
+        <div className={`text-xs mt-2 text-right transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-gray-500'
+        }`}>
+          {messageForm.content.length}/1000 characters
+        </div>
+      </div>
+
+      {/* File Attachment */}
+      <div>
+        <label className={`block text-sm font-medium mb-3 transition-colors duration-300 ${
+          isDark ? 'text-slate-300' : 'text-gray-700'
+        }`}>
+          Attach File (optional)
+        </label>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <motion.label
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className={`flex items-center px-4 sm:px-6 py-3 rounded-xl cursor-pointer border-2 border-dashed transition-all duration-300 font-medium text-sm w-full sm:w-auto justify-center sm:justify-start ${
+              isDark
+                ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-emerald-500'
+                : 'bg-gray-50 border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-emerald-400'
+            }`}
+          >
+            <Upload className="h-5 w-5 mr-2 flex-shrink-0" />
+            <span className="truncate">{messageForm.file ? messageForm.file.name : 'Choose File'}</span>
+            <input
+              type="file"
+              onChange={(e) => setMessageForm({ ...messageForm, file: e.target.files?.[0] || null })}
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.txt,.xlsx,.xls,.ppt,.pptx"
+              className="hidden"
+            />
+          </motion.label>
+          {messageForm.file && (
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
+              <div className="flex items-center gap-2 min-w-0 flex-1 sm:flex-initial">
+                <FileText className={`h-5 w-5 flex-shrink-0 ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`} />
+                <span className={`text-xs sm:text-sm font-medium truncate max-w-[150px] sm:max-w-[200px] transition-colors duration-300 ${
+                  isDark ? 'text-slate-300' : 'text-gray-700'
+                }`}>{messageForm.file.name}</span>
+              </div>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                type="button"
+                onClick={() => setMessageForm({ ...messageForm, file: null })}
+                className={`p-1 rounded-lg transition-colors duration-300 flex-shrink-0 ${
+                  isDark 
+                    ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-700' 
+                    : 'text-gray-500 hover:text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                <XCircle className="h-4 w-4" />
+              </motion.button>
+            </div>
+          )}
+        </div>
+        <p className={`text-xs mt-2 transition-colors duration-300 ${
+          isDark ? 'text-slate-400' : 'text-gray-500'
+        }`}>
+          Supported formats: PDF, DOC, DOCX, Images (JPG, PNG, GIF), TXT, Excel, PowerPoint (Max: 10MB)
+        </p>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col-reverse sm:flex-row gap-3 pt-4">
+        <motion.button
+          type="button"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowMessageForm(false)}
+          className={`w-full sm:flex-1 px-6 py-3 rounded-xl border-2 font-medium transition-all duration-300 text-sm ${
+            isDark
+              ? 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-slate-500'
+              : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400'
+          }`}
+        >
+          Cancel
+        </motion.button>
+        <motion.button
+          type="submit"
+          disabled={loading}
+          whileHover={{ scale: loading ? 1 : 1.05 }}
+          whileTap={{ scale: loading ? 1 : 0.95 }}
+          className="w-full sm:flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-all duration-300 shadow-lg font-medium text-sm"
+        >
+          {loading ? (
+            <>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                className="rounded-full h-5 w-5 border-b-2 border-white mr-3 flex-shrink-0"
+              />
+              <span className="truncate">Sending...</span>
+            </>
+          ) : (
+            <>
+              <Send className="h-5 w-5 mr-2 flex-shrink-0" />
+              <span className="truncate">
+                {messageType === 'announcement' ? 'Send Announcement' :
+                 messageType === 'class' ? `Send to Class` :
+                 messageType === 'group' ? `Send to ${messageForm.studentIds.length} Student${messageForm.studentIds.length !== 1 ? 's' : ''}` :
+                 'Send Message'}
+              </span>
+            </>
+          )}
+        </motion.button>
+      </div>
+    </form>
+  </motion.div>
+)}
     </AnimatePresence>
 
     {/* Enhanced Messages List */}
@@ -3738,96 +4020,103 @@ const exportLastWeekToPDF = async () => {
                   {/* Reply Form Modal */}
                   <AnimatePresence>
                     {showReplyForm && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-                        onClick={() => setShowReplyForm(false)}
-                      >
-                        <motion.div
-                          initial={{ scale: 0.9, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0.9, opacity: 0 }}
-                          onClick={(e) => e.stopPropagation()}
-                          className={`rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto ${
-                            isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-gray-200'
-                          }`}
-                        >
-                          <div className="flex justify-between items-center mb-6">
-                            <h3 className={`text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                              Reply to Student
-                            </h3>
-                            <motion.button
-                              whileHover={{ scale: 1.1 }}
-                              whileTap={{ scale: 0.9 }}
-                              onClick={() => setShowReplyForm(false)}
-                              className={`p-2 rounded-lg ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}
-                            >
-                              <XCircle className="h-5 w-5" />
-                            </motion.button>
-                          </div>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-3 sm:p-4"
+    onClick={() => setShowReplyForm(false)}
+  >
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.9, opacity: 0 }}
+      onClick={(e) => e.stopPropagation()}
+      className={`rounded-2xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto ${
+        isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-gray-200'
+      }`}
+    >
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+        <h3 className={`text-lg sm:text-xl font-bold ${isDark ? 'text-white' : 'text-gray-900'}`}>
+          Reply to Student
+        </h3>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowReplyForm(false)}
+          className={`self-end sm:self-center p-2 rounded-lg ${isDark ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}
+        >
+          <XCircle className="h-5 w-5" />
+        </motion.button>
+      </div>
 
-                          <div className="space-y-4">
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Your Reply
-                              </label>
-                              <textarea
-                                value={replyForm.content}
-                                onChange={(e) => setReplyForm({ ...replyForm, content: e.target.value })}
-                                placeholder="Type your reply here..."
-                                rows={4}
-                                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none ${
-                                  isDark 
-                                    ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
-                                    : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                                }`}
-                              />
-                            </div>
+      <div className="space-y-4">
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${
+            isDark ? 'text-slate-300' : 'text-gray-700'
+          }`}>
+            Your Reply
+          </label>
+          <textarea
+            value={replyForm.content}
+            onChange={(e) => setReplyForm({ ...replyForm, content: e.target.value })}
+            placeholder="Type your reply here..."
+            rows={4}
+            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none text-sm sm:text-base ${
+              isDark 
+                ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
+                : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+            }`}
+          />
+        </div>
 
-                            <div>
-                              <label className={`block text-sm font-medium mb-2 ${
-                                isDark ? 'text-slate-300' : 'text-gray-700'
-                              }`}>
-                                Attachment (Optional)
-                              </label>
-                              <input
-                                type="file"
-                                onChange={(e) => setReplyForm({ ...replyForm, file: e.target.files?.[0] || null })}
-                                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                                  isDark 
-                                    ? 'bg-slate-700 border-slate-600 text-white' 
-                                    : 'bg-white border-gray-300 text-gray-900'
-                                }`}
-                              />
-                            </div>
-                          </div>
+        <div>
+          <label className={`block text-sm font-medium mb-2 ${
+            isDark ? 'text-slate-300' : 'text-gray-700'
+          }`}>
+            Attachment (Optional)
+          </label>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+            <input
+              type="file"
+              onChange={(e) => setReplyForm({ ...replyForm, file: e.target.files?.[0] || null })}
+              className={`w-full px-3 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-medium text-sm ${
+                isDark 
+                  ? 'bg-slate-700 border-slate-600 text-white file:bg-blue-900/30 file:text-blue-300 hover:file:bg-blue-800/40' 
+                  : 'bg-white border-gray-300 text-gray-900 file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100'
+              }`}
+            />
+          </div>
+        </div>
+      </div>
 
-                          <div className="flex justify-end space-x-3 mt-6">
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={() => setShowReplyForm(false)}
-                              className="px-6 py-3 rounded-xl font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
-                            >
-                              Cancel
-                            </motion.button>
-                            <motion.button
-                              whileHover={{ scale: 1.05 }}
-                              whileTap={{ scale: 0.95 }}
-                              onClick={replyToStudent}
-                              disabled={studentMsgLoading || !replyForm.content.trim()}
-                              className="px-6 py-3 rounded-xl font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                              {studentMsgLoading ? 'Sending...' : 'Send Reply'}
-                            </motion.button>
-                          </div>
-                        </motion.div>
-                      </motion.div>
-                    )}
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 mt-6">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => setShowReplyForm(false)}
+          className="w-full sm:w-auto px-6 py-3 rounded-xl font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors text-sm"
+        >
+          Cancel
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={replyToStudent}
+          disabled={studentMsgLoading || !replyForm.content.trim()}
+          className="w-full sm:w-auto px-6 py-3 rounded-xl font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm flex items-center justify-center"
+        >
+          {studentMsgLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Sending...
+            </>
+          ) : 'Send Reply'}
+        </motion.button>
+      </div>
+    </motion.div>
+  </motion.div>
+)}
                   </AnimatePresence>
                 </motion.div>
               )}
@@ -3892,99 +4181,101 @@ const exportLastWeekToPDF = async () => {
 
                   {/* Send Message to Admin Form */}
                   {showStaffMsgForm && (
-                  <div className={`p-4 rounded-lg border ${
-                    isDark ? 'bg-slate-800/50 border-slate-600' : 'bg-white border-gray-200'
-                  }`}>
-                    <h4 className={`text-sm font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
-                      Send Message to Administrator
-                    </h4>
-                    <form onSubmit={sendStaffMessage} className="space-y-4">
-                      <div>
-                        <ModernDropdown
-                          label="Select Administrator"
-                          value={staffForm.recipientId}
-                          onChange={(value) => setStaffForm({ ...staffForm, recipientId: value })}
-                          options={adminList.map((admin) => ({
-                            value: admin.id.toString(),
-                            label: `${admin.name} (${admin.email})`,
-                            description: admin.email,
-                            icon: User
-                          }))}
-                          placeholder="Choose an administrator..."
-                          searchable
-                          clearable
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className={`block text-sm font-medium mb-2 ${
-                          isDark ? 'text-slate-300' : 'text-gray-700'
-                        }`}>
-                          Message
-                        </label>
-                        <textarea
-                          value={staffForm.content}
-                          onChange={(e) => setStaffForm({ ...staffForm, content: e.target.value })}
-                          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                            isDark 
-                              ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
-                              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-                          }`}
-                          rows={3}
-                          placeholder="Type your message here..."
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className={`block text-sm font-medium mb-2 ${
-                          isDark ? 'text-slate-300' : 'text-gray-700'
-                        }`}>
-                          Attachment (Optional)
-                        </label>
-                        <input
-                          type="file"
-                          onChange={(e) => setStaffForm({ ...staffForm, file: e.target.files?.[0] || null })}
-                          className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium ${
-                            isDark 
-                              ? 'bg-slate-700 border-slate-600 text-white file:bg-emerald-900/30 file:text-emerald-300 hover:file:bg-emerald-800/40' 
-                              : 'bg-white border-gray-300 text-gray-900 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'
-                          }`}
-                        />
-                      </div>
-                      <div className="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowStaffMsgForm(false);
-                            setStaffForm({ recipientId: '', content: '', file: null });
-                          }}
-                          className={`px-4 py-2 rounded-lg border transition-colors ${
-                            isDark ? 'border-slate-600 text-slate-300 hover:bg-slate-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'
-                          }`}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={staffMsgLoading || !staffForm.content.trim() || !staffForm.recipientId}
-                          className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-                        >
-                          {staffMsgLoading ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                              Sending...
-                            </>
-                          ) : (
-                            <>
-                              <Send className="h-4 w-4 mr-2" />
-                              Send Message
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                  )}
+  <div className={`p-4 rounded-lg border ${
+    isDark ? 'bg-slate-800/50 border-slate-600' : 'bg-white border-gray-200'
+  }`}>
+    <h4 className={`text-sm font-semibold mb-3 ${isDark ? 'text-white' : 'text-gray-900'}`}>
+      Send Message to Administrator
+    </h4>
+    <form onSubmit={sendStaffMessage} className="space-y-4">
+      <div>
+        <ModernDropdown
+          label="Select Administrator"
+          value={staffForm.recipientId}
+          onChange={(value) => setStaffForm({ ...staffForm, recipientId: value })}
+          options={adminList.map((admin) => ({
+            value: admin.id.toString(),
+            label: `${admin.name} (${admin.email})`,
+            description: admin.email,
+            icon: User
+          }))}
+          placeholder="Choose an administrator..."
+          searchable
+          clearable
+          required
+        />
+      </div>
+      <div>
+        <label className={`block text-sm font-medium mb-2 ${
+          isDark ? 'text-slate-300' : 'text-gray-700'
+        }`}>
+          Message
+        </label>
+        <textarea
+          value={staffForm.content}
+          onChange={(e) => setStaffForm({ ...staffForm, content: e.target.value })}
+          className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm ${
+            isDark 
+              ? 'bg-slate-700 border-slate-600 text-white placeholder-slate-400' 
+              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
+          }`}
+          rows={3}
+          placeholder="Type your message here..."
+          required
+        />
+      </div>
+      <div>
+        <label className={`block text-sm font-medium mb-2 ${
+          isDark ? 'text-slate-300' : 'text-gray-700'
+        }`}>
+          Attachment (Optional)
+        </label>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <input
+            type="file"
+            onChange={(e) => setStaffForm({ ...staffForm, file: e.target.files?.[0] || null })}
+            className={`w-full px-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs sm:file:text-sm file:font-medium text-sm ${
+              isDark 
+                ? 'bg-slate-700 border-slate-600 text-white file:bg-emerald-900/30 file:text-emerald-300 hover:file:bg-emerald-800/40' 
+                : 'bg-white border-gray-300 text-gray-900 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100'
+            }`}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-2">
+        <button
+          type="button"
+          onClick={() => {
+            setShowStaffMsgForm(false);
+            setStaffForm({ recipientId: '', content: '', file: null });
+          }}
+          className={`w-full sm:w-auto px-4 py-3 rounded-lg border transition-colors text-sm ${
+            isDark ? 'border-slate-600 text-slate-300 hover:bg-slate-700' : 'border-gray-300 text-gray-700 hover:bg-gray-100'
+          }`}
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          disabled={staffMsgLoading || !staffForm.content.trim() || !staffForm.recipientId}
+          className="w-full sm:w-auto px-4 py-3 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
+        >
+          {staffMsgLoading ? (
+            <>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+              Sending...
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4 mr-2" />
+              Send Message
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  </div>
+)}
 
                   {/* Conversations */}
                   <div className={`p-4 rounded-lg border ${
