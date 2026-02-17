@@ -9,7 +9,16 @@ if (dns.setDefaultResultOrder) {
 
 dotenv.config();
 
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const dbUrl = process.env.DATABASE_URL;
+
+if (!dbUrl) {
+  console.error('❌ Error: DATABASE_URL is not defined in environment variables.');
+  console.error('💡 Please check your Render/Local environment settings.');
+} else {
+  console.log(`🔌 Database connection string detected (starts with: ${dbUrl.substring(0, 10)}...)`);
+}
+
+const sequelize = new Sequelize(dbUrl, {
   dialect: 'postgres',
 
   dialectOptions:
