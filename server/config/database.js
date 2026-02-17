@@ -1,5 +1,11 @@
 import { Sequelize } from 'sequelize';
 import dotenv from 'dotenv';
+import dns from 'dns';
+
+// Force prioritize IPv4 over IPv6 to fix connectivity issues on platforms like Render
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('ipv4first');
+}
 
 dotenv.config();
 
@@ -9,22 +15,22 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialectOptions:
     process.env.NODE_ENV === "production"
       ? {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false
-          }
+        ssl: {
+          require: true,
+          rejectUnauthorized: false
         }
+      }
       : {},
 
   logging: process.env.NODE_ENV === 'development'
     ? (msg) => {
-        if (
-          msg.includes('ERROR') ||
-          (msg.includes('Executing') && msg.includes('SELECT 1+1'))
-        ) {
-          console.log(msg);
-        }
+      if (
+        msg.includes('ERROR') ||
+        (msg.includes('Executing') && msg.includes('SELECT 1+1'))
+      ) {
+        console.log(msg);
       }
+    }
     : false,
 
   pool: {
